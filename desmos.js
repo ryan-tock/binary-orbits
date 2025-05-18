@@ -42,7 +42,7 @@ export function read_data(state) {
     return data;
 }
 
-export function set_orbit(state, parameters) {
+export function set_orbit(state, data, parameters) {
     set_variable(state, "a", parameters[0]);
     set_variable(state, "e_{0}", parameters[1]);
     set_variable(state, "i", parameters[2]);
@@ -50,4 +50,24 @@ export function set_orbit(state, parameters) {
     set_variable(state, "\\omega", parameters[4]);
     set_variable(state, "M_{0}", parameters[5]);
     set_variable(state, "p", parameters[6]);
+
+    let t = [];
+    let x = [];
+    let y = [];
+    let weights = [];
+    let methods = [];
+
+    for (const point of data) {
+        t.push(point['t']);
+        x.push(point['x']);
+        y.push(point['y']);
+        weights.push(point['weight']);
+        methods.push(point['method']);
+    }
+
+    set_variable(state, "t_{0}", "\\left[" + t.join(", ") + "\\right]");
+    set_variable(state, "x_{0}", "\\left[" + x.join(", ") + "\\right]");
+    set_variable(state, "y_{0}", "\\left[" + y.join(", ") + "\\right]");
+    set_variable(state, "w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
+    set_variable(state, "m_{ethod}", "\\left[" + methods.join(", ") + "\\right]");
 }

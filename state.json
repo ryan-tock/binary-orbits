@@ -154,8 +154,7 @@
       {
         "type": "folder",
         "id": "73",
-        "title": "Graph Settings",
-        "collapsed": true
+        "title": "Graph Settings"
       },
       {
         "type": "expression",
@@ -237,7 +236,7 @@
         "id": "146",
         "folderId": "73",
         "color": "#c74440",
-        "latex": "p_{ointColor}=3",
+        "latex": "p_{ointColor}=1",
         "slider": {
           "hardMin": true,
           "hardMax": true,
@@ -412,7 +411,7 @@
         "id": "162",
         "folderId": "53",
         "color": "#6042a6",
-        "latex": "t_{ypeGradient}=\\left\\{m_{ethod}=0:\\operatorname{rgb}\\left(50,205,50\\right),m_{ethod}=1:\\operatorname{rgb}\\left(255,0,127\\right),m_{ethod}=2:\\operatorname{rgb}\\left(0,0,255\\right)\\right\\}"
+        "latex": "t_{ypeGradient}=\\left\\{m_{ethods}=0:\\operatorname{rgb}\\left(50,205,50\\right),m_{ethods}=1:\\operatorname{rgb}\\left(255,0,127\\right),m_{ethods}=2:\\operatorname{rgb}\\left(0,0,255\\right)\\right\\}"
       },
       {
         "type": "expression",
@@ -558,12 +557,13 @@
         "id": "152",
         "folderId": "81",
         "color": "#c74440",
-        "latex": "m_{ethod}=\\left[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\\right]"
+        "latex": "m_{ethods}=\\left[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\\right]"
       },
       {
         "type": "folder",
         "id": "174",
-        "title": "Credits and helper code"
+        "title": "Credits and helper code",
+        "collapsed": true
       },
       {
         "type": "text",

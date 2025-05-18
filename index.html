@@ -7,12 +7,17 @@
     <title>Binary Orbits</title>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
     <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
 </head>
 <body>
     <h1>Binary Orbit 3D Visualizer</h1>
     <div id="calculator" style="width: 1000px; height: 800px;"></div>
 
-    <button onclick="runPythonFunction()">Run Python Function</button>
+    <button id="myButton">Run Python Function</button>
+    <script type="module">
+        import { initOptimiziaton } from './main.js';
+        const button = document.getElementById('myButton');
+        button.addEventListener('click', initOptimiziaton);
+    </script>
 </body>
 </html>

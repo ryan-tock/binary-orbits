@@ -1,20 +1,11 @@
+import json
 import math
-import numpy as np
+import numpy
 from scipy.optimize import differential_evolution
 
 NEWTON_ITERATIONS = 6
 
-def optimize(data):
-    bounds = [(0,0), (0, 0.95), (0, math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (1, 1000)]
-    result = differential_evolution(loss, bounds, args=(data,))
-
-    parameters = result.x.tolist()
-
-    loss(parameters, data)
-
-    return parameters
-
-def loss(parameters, data):
+def calc_loss(parameters, data):
     e = parameters[1]
     i = parameters[2]
     node = parameters[3]
@@ -71,3 +62,15 @@ def loss(parameters, data):
         error += (data[index]['y'] - sm * predicted_positions[index][1]) ** 2 * data[index]['weight']
 
     return error
+
+def lambda_handler(event, context):
+    data = json.loads(event['body'])
+    bounds = [(0,0), (0, 0.95), (0, math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (1, 1000)]
+    result = differential_evolution(calc_loss, bounds, args=(data,))
+    parameters = result.x.tolist()
+    _ = calc_loss(parameters, data) # to get the semi major axis from least squares regression
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps(parameters)
+    }

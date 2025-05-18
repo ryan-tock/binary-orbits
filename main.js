@@ -1,39 +1,45 @@
-let pyodide;
+import { set_orbit } from "./desmos.js";
 
-async function initializePyodide() {
-    pyodide = await loadPyodide();
-    console.log("Pyodide loaded");
-}
+let data;
+let state;
+let calculator
 
-async function loadPythonScript() {
-    await pyodide.loadPackage("numpy");
-    await pyodide.loadPackage("scipy");
-
+async function readData() {
     const timestamp = new Date().getTime();
-    const response = await fetch("myscript.py?cache_bust=${timestamp}");
-    const pythonCode = await response.text();
-    await pyodide.runPythonAsync(pythonCode);
-    console.log("Python script loaded");
-}
+    const response_data = await fetch(`./binary-data.json?cache_bust=${timestamp}`);
+    data = await response_data.json();
+    data = data['00022+2705 BU  733AB']['data'];
 
-async function runPythonFunction() {
-    const result = pyodide.runPython("optimize([{'t':1890.43,'x':0.15,'y':0.187,'weight':1,'method':1}, {'t':1893.48,'x':0.05,'y':0.235,'weight':1,'method':1}, {'t':1898.44,'x':-0.119,'y':0.276,'weight':1,'method':1}])");
-    const parameters = result.toJs();
-    console.log(parameters);
+    const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
+    state = await response_state.json();
 }
 
 async function loadCalc() {
     var elt = document.getElementById('calculator');
-    var calculator = Desmos.Calculator3D(elt);
+    calculator = Desmos.Calculator3D(elt);
 
-    const response = await fetch('./state.json');
-    const json = await response.json();
-    calculator.setState(JSON.stringify(json));
+    calculator.setState(state);
     calculator.updateSettings({"expressions": false});
 }
 
+export async function initOptimiziaton() {
+    fetch('https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        })
+    .then(response => response.json())
+    .then(result => {
+        set_orbit(state, data, result);
+        calculator.setState(state);
+        console.log("fitted!");
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 window.addEventListener("load", async () => {
-    await initializePyodide();
-    await loadPythonScript();
+    await readData();
     await loadCalc();
 });
