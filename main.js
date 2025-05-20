@@ -3,8 +3,13 @@ import { set_orbit } from "./desmos.js";
 let data;
 let activeData;
 
+const fileInput = document.getElementById("file-input");
+const keyDropdown = document.getElementById("key-dropdown");
+const optimizeButton = document.getElementById("optimize");
+
 export async function initOptimiziaton() {
-    console.log("beggining fit");
+    console.log("beginning fit");
+    optimizeButton.disabled = true;
     fetch('https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process', {
         method: 'POST',
         headers: {
@@ -16,13 +21,13 @@ export async function initOptimiziaton() {
     .then(result => {
         set_orbit(activeData, result);
         console.log("fitted!");
+        optimizeButton.disabled = false;
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        optimizeButton.disabled = false;
+    });
 }
-
-const fileInput = document.getElementById("file-input");
-const keyDropdown = document.getElementById("key-dropdown");
-const optimizeButton = document.getElementById("optimize");
 
 fileInput.addEventListener('change', event => {
     const file = event.target.files[0];
@@ -58,12 +63,7 @@ function populateDropdown() {
     keyDropdown.disabled = false;
 }
 
-
 keyDropdown.addEventListener('change', (event) => {
-    // if (key && key != "Select an Orbit") {
-    //     jsonData[key]['data'] = data;
-    // }
-    // changeBox.value = "";
     var active_orbit = event.target.value
 
     if (active_orbit && data[active_orbit]) {
