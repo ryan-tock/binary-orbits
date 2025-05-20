@@ -1,4 +1,18 @@
-export function read_variable(state, variable) {
+let state;
+let calculator;
+
+
+window.addEventListener("load", async () => {
+    var elt = document.getElementById('calculator');
+    calculator = Desmos.Calculator3D(elt);
+    calculator.updateSettings({"expressions": false});
+
+    const timestamp = new Date().getTime(); // can remove after development
+    const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
+    state = await response_state.json();
+});
+
+function read_variable(variable) {
     let expressions = state['expressions']['list']
     for (const i in expressions) {
         if (Object.hasOwn(expressions[i], 'latex')) {
@@ -9,7 +23,7 @@ export function read_variable(state, variable) {
     }
 }
 
-export function set_variable(state, variable, value) {
+function set_variable(variable, value) {
     let expressions = state['expressions']['list']
     for (const i in expressions) {
         if (Object.hasOwn(expressions[i], 'latex')) {
@@ -20,7 +34,7 @@ export function set_variable(state, variable, value) {
     }
 }
 
-export function read_data(state) {
+function read_data() {
     var data = [];
 
     let t = JSON.parse(read_variable(state, 't_{0}').split("\\left")[1].split("\\right")[0] + "]");
@@ -42,14 +56,14 @@ export function read_data(state) {
     return data;
 }
 
-export function set_orbit(state, data, parameters) {
-    set_variable(state, "a", parameters[0]);
-    set_variable(state, "e_{0}", parameters[1]);
-    set_variable(state, "i", parameters[2]);
-    set_variable(state, "\\Omega", parameters[3]);
-    set_variable(state, "\\omega", parameters[4]);
-    set_variable(state, "M_{0}", parameters[5]);
-    set_variable(state, "p", parameters[6]);
+export function set_orbit(data, parameters) {
+    set_variable("a", parameters[0]);
+    set_variable("e_{0}", parameters[1]);
+    set_variable("i", parameters[2]);
+    set_variable("\\Omega", parameters[3]);
+    set_variable("\\omega", parameters[4]);
+    set_variable("M_{0}", parameters[5]);
+    set_variable("p", parameters[6]);
 
     let t = [];
     let x = [];
@@ -65,9 +79,11 @@ export function set_orbit(state, data, parameters) {
         methods.push(point['method']);
     }
 
-    set_variable(state, "t_{0}", "\\left[" + t.join(", ") + "\\right]");
-    set_variable(state, "x_{0}", "\\left[" + x.join(", ") + "\\right]");
-    set_variable(state, "y_{0}", "\\left[" + y.join(", ") + "\\right]");
-    set_variable(state, "w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
-    set_variable(state, "m_{ethod}", "\\left[" + methods.join(", ") + "\\right]");
+    set_variable("t_{0}", "\\left[" + t.join(", ") + "\\right]");
+    set_variable("x_{0}", "\\left[" + x.join(", ") + "\\right]");
+    set_variable("y_{0}", "\\left[" + y.join(", ") + "\\right]");
+    set_variable("w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
+    set_variable("m_{ethod}", "\\left[" + methods.join(", ") + "\\right]");
+
+    calculator.setState(state);
 }

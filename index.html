@@ -11,12 +11,17 @@
 </head>
 <body>
     <h1>Binary Orbit 3D Visualizer</h1>
+    <input type="file" id="file-input" accept=".json">
+    <select id="key-dropdown" disabled>
+      <option value="">Select an Orbit</option>
+    </select><br>
+
+    <button id="optimize" disabled>Optimize Orbit!</button>
     <div id="calculator" style="width: 1000px; height: 800px;"></div>
 
-    <button id="myButton">Run Python Function</button>
     <script type="module">
         import { initOptimiziaton } from './main.js';
-        const button = document.getElementById('myButton');
+        const button = document.getElementById('optimize');
         button.addEventListener('click', initOptimiziaton);
     </script>
 </body>
