@@ -59,7 +59,7 @@ resource "aws_apigatewayv2_api" "http_api" {
     name = "optimize-orbit-api"
     protocol_type = "HTTP"
     cors_configuration {
-        allow_origins = ["http://localhost:8000", "https://ryan-tock.github.io/binary-orbits"]
+        allow_origins = ["http://localhost:8000", "https://ryan-tock.github.io"]
         allow_methods = ["POST", "GET", "OPTIONS"]
         allow_headers = ["content-type"]
         max_age = 300

@@ -4,6 +4,7 @@ let data;
 let activeData;
 
 export async function initOptimiziaton() {
+    console.log("beggining fit");
     fetch('https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process', {
         method: 'POST',
         headers: {
@@ -64,11 +65,9 @@ keyDropdown.addEventListener('change', (event) => {
     // }
     // changeBox.value = "";
     var active_orbit = event.target.value
-    console.log(active_orbit);
 
     if (active_orbit && data[active_orbit]) {
         activeData = data[active_orbit]['data'];
-        console.log(activeData);
         set_orbit(activeData, [0, 0, 0, 0, 0, 0, 1]);
         optimizeButton.disabled = false;
     }
