@@ -17,6 +17,13 @@ const periapsis = document.getElementById("periapsis");
 const meanAnomaly = document.getElementById("mean-anomaly");
 const period = document.getElementById("period");
 
+const retainPoint = document.getElementById("retain-point");
+const removePoint = document.getElementById("remove-point");
+const highlightPoint = document.getElementById("highlight-point");
+const flipX = document.getElementById("flip-x");
+const flipY = document.getElementById("flip-y");
+const flipXY = document.getElementById("flip-xy");
+
 var periodLow = 2;
 var periodHigh = 40;
 
@@ -93,6 +100,7 @@ keyDropdown.addEventListener('change', (event) => {
         activeData = data[active_orbit]['data'];
         set_orbit(activeData, [0, 0, 0, 0, 0, 0, 1]);
         set_variable("s_{howErrorLines}", 0);
+        set_variable("h_{ighlightedPoints}", "\\left[\\right]");
         optimizeButton.disabled = false;
     }
 });
@@ -111,4 +119,64 @@ periodHighInput.addEventListener('change', (event) => {
         periodHigh = parseFloat(value);
     }
     periodHighInput.value = "" + periodHigh;
+});
+
+retainPoint.addEventListener('change', (event) => {
+    if (retainPoint.checked) {
+        set_variable("e_{nableDataFixing}", 0);
+        set_variable("f_{lipX}", 0);
+        set_variable("f_{lipY}", 0);
+        set_variable("r_{emove}", 0);
+        set_variable("h_{ighlight}", 0);
+    }
+});
+
+removePoint.addEventListener('change', (event) => {
+    if (removePoint.checked) {
+        set_variable("e_{nableDataFixing}", 1);
+        set_variable("f_{lipX}", 0);
+        set_variable("f_{lipY}", 0);
+        set_variable("r_{emove}", 1);
+        set_variable("h_{ighlight}", 0);
+    }
+});
+
+highlightPoint.addEventListener('change', (event) => {
+    if (highlightPoint.checked) {
+        set_variable("e_{nableDataFixing}", 1);
+        set_variable("f_{lipX}", 0);
+        set_variable("f_{lipY}", 0);
+        set_variable("r_{emove}", 0);
+        set_variable("h_{ighlight}", 1);
+    }
+});
+
+flipX.addEventListener('change', (event) => {
+    if (flipX.checked) {
+        set_variable("e_{nableDataFixing}", 1);
+        set_variable("f_{lipX}", 1);
+        set_variable("f_{lipY}", 0);
+        set_variable("r_{emove}", 0);
+        set_variable("h_{ighlight}", 0);
+    }
+});
+
+flipY.addEventListener('change', (event) => {
+    if (flipY.checked) {
+        set_variable("e_{nableDataFixing}", 1);
+        set_variable("f_{lipX}", 0);
+        set_variable("f_{lipY}", 1);
+        set_variable("r_{emove}", 0);
+        set_variable("h_{ighlight}", 0);
+    }
+});
+
+flipXY.addEventListener('change', (event) => {
+    if (flipXY.checked) {
+        set_variable("e_{nableDataFixing}", 1);
+        set_variable("f_{lipX}", 1);
+        set_variable("f_{lipY}", 1);
+        set_variable("r_{emove}", 0);
+        set_variable("h_{ighlight}", 0);
+    }
 });

@@ -10,6 +10,7 @@ window.addEventListener("load", async () => {
     const timestamp = new Date().getTime(); // can remove after development
     const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
     state = await response_state.json();
+    calculator.setState(state);
 });
 
 function read_variable(variable) {
@@ -24,6 +25,7 @@ function read_variable(variable) {
 }
 
 export function set_variable(variable, value) {
+    state = calculator.getState();
     let expressions = state['expressions']['list']
     for (const i in expressions) {
         if (Object.hasOwn(expressions[i], 'latex')) {
