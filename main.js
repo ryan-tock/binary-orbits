@@ -1,4 +1,4 @@
-import { set_orbit } from "./desmos.js";
+import { set_orbit, set_variable } from "./desmos.js";
 
 let data;
 let activeData;
@@ -20,6 +20,7 @@ export async function initOptimiziaton() {
     .then(response => response.json())
     .then(result => {
         set_orbit(activeData, result);
+        set_variable("s_{howErrorLines}", 1);
         console.log("fitted!");
         optimizeButton.disabled = false;
     })
@@ -69,6 +70,7 @@ keyDropdown.addEventListener('change', (event) => {
     if (active_orbit && data[active_orbit]) {
         activeData = data[active_orbit]['data'];
         set_orbit(activeData, [0, 0, 0, 0, 0, 0, 1]);
+        set_variable("s_{howErrorLines}", 0);
         optimizeButton.disabled = false;
     }
 });

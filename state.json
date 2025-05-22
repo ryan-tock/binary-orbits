@@ -12,22 +12,22 @@
     },
     "threeDMode": true,
     "worldRotation3D": [
-      0.8331748870859871,
-      0.5143904492508126,
-      0.20303219756677293,
-      -0.49976579276876476,
-      0.857556100625224,
-      -0.12178541233933128,
-      -0.23675675261215606,
-      0,
-      0.9715689579708342
+      0.22189475670593925,
+      0.9739508498282211,
+      0.046716796336598976,
+      -0.9530575670883494,
+      0.2267592161601069,
+      -0.20065276398984977,
+      -0.20601939412710057,
+      -1.0816232102830542e-11,
+      0.9785479085023272
     ],
     "axis3D": [
       0,
       0,
-      -0.9999999999989012
+      -1.0000000000001485
     ],
-    "speed3D": 0.4937390817364284,
+    "speed3D": 0.28585920414825533,
     "showPlane3D": false,
     "product": "graphing-3d",
     "__v12ViewportLatexStash": {
@@ -154,7 +154,8 @@
       {
         "type": "folder",
         "id": "73",
-        "title": "Graph Settings"
+        "title": "Graph Settings",
+        "collapsed": true
       },
       {
         "type": "expression",
@@ -242,6 +243,20 @@
           "hardMax": true,
           "min": "0",
           "max": "3",
+          "step": "1"
+        }
+      },
+      {
+        "type": "expression",
+        "id": "181",
+        "folderId": "73",
+        "color": "#2d70b3",
+        "latex": "s_{howErrorLines}=1",
+        "slider": {
+          "hardMin": true,
+          "hardMax": true,
+          "min": "0",
+          "max": "1",
           "step": "1"
         }
       },
@@ -397,21 +412,21 @@
         "id": "133",
         "folderId": "53",
         "color": "#2d70b3",
-        "latex": "t_{imeGradient}=\\operatorname{hsv}\\left(\\frac{90\\left(t_{0}-\\min\\left(t_{0}\\right)\\right)}{\\max\\left(t_{0}\\right)-\\min\\left(t_{0}\\right)},0.8,0.9\\right)"
+        "latex": "t_{imeGradient}=\\left[\\left\\{i_{sHighlighted}\\left(i\\right)=1:\\operatorname{rgb}\\left(0,0,0\\right),\\operatorname{hsv}\\left(\\frac{90\\left(t_{0}\\left[i\\right]-\\min\\left(t_{0}\\right)\\right)}{\\max\\left(t_{0}\\right)-\\min\\left(t_{0}\\right)},0.8,0.9\\right)\\right\\}\\operatorname{for}i=\\left[1...t_{0}.\\operatorname{count}\\right]\\right]"
       },
       {
         "type": "expression",
         "id": "161",
         "folderId": "53",
         "color": "#388c46",
-        "latex": "w_{eightsGradient}=\\operatorname{hsv}\\left(90w_{eights},0.8,0.9\\right)"
+        "latex": "w_{eightsGradient}=\\left[\\left\\{i_{sHighlighted}\\left(i\\right)=1:\\operatorname{rgb}\\left(0,0,0\\right),\\operatorname{hsv}\\left(90w_{eights}\\left[i\\right],0.8,0.9\\right)\\right\\}\\operatorname{for}i=\\left[1...w_{eights}.\\operatorname{count}\\right]\\right]"
       },
       {
         "type": "expression",
         "id": "162",
         "folderId": "53",
         "color": "#6042a6",
-        "latex": "t_{ypeGradient}=\\left\\{m_{ethods}=0:\\operatorname{rgb}\\left(50,205,50\\right),m_{ethods}=1:\\operatorname{rgb}\\left(255,0,127\\right),m_{ethods}=2:\\operatorname{rgb}\\left(0,0,255\\right)\\right\\}"
+        "latex": "t_{ypeGradient}=\\left[\\left\\{i_{sHighlighted}\\left(i\\right)=1:\\operatorname{rgb}\\left(0,0,0\\right),\\left\\{m_{ethods}\\left[i\\right]=0:\\operatorname{rgb}\\left(50,205,50\\right),m_{ethods}\\left[i\\right]=1:\\operatorname{rgb}\\left(255,0,127\\right),m_{ethods}\\left[i\\right]=2:\\operatorname{rgb}\\left(0,0,255\\right)\\right\\}\\right\\}\\operatorname{for}i=\\left[1...m_{ethods}.\\operatorname{count}\\right]\\right]"
       },
       {
         "type": "expression",
@@ -425,8 +440,22 @@
         "id": "143",
         "folderId": "53",
         "color": "#aaaaaa",
-        "latex": "\\operatorname{segment}\\left(p_{os}\\left(t_{0}\\right),\\left(x_{0},y_{0},p_{os}\\left(t_{0}\\right).z\\right)\\right)",
+        "latex": "\\left\\{s_{howErrorLines}=1:\\operatorname{segment}\\left(p_{os}\\left(t_{0}\\right),\\left(x_{0},y_{0},p_{os}\\left(t_{0}\\right).z\\right)\\right)\\right\\}",
         "lineWidth": "0.2p_{ointSize}"
+      },
+      {
+        "type": "expression",
+        "id": "176",
+        "folderId": "53",
+        "color": "#2d70b3",
+        "latex": "h_{ighlightedPoints}=\\left[\\right]"
+      },
+      {
+        "type": "expression",
+        "id": "177",
+        "folderId": "53",
+        "color": "#388c46",
+        "latex": "i_{sHighlighted}\\left(i\\right)=h_{ighlightedPoints}\\left[h_{ighlightedPoints}=i\\right].\\operatorname{count}"
       },
       {
         "type": "expression",
@@ -516,7 +545,7 @@
         "id": "139",
         "folderId": "81",
         "color": "#388c46",
-        "latex": "r_{emovePoint}\\left(i\\right)=\\left\\{i=1:\\left(t_{0}\\to t_{0}\\left[2...\\right],x_{0}\\to x_{0}\\left[2...\\right],y_{0}\\to y_{0}\\left[2...\\right],w_{eights}\\to w_{eights}\\left[2...\\right],m_{ethod}\\to m_{ethod}\\left[2...\\right]\\right),i=t_{0}.\\operatorname{count}:\\left(t_{0}\\to t_{0}\\left[1...t_{0}.\\operatorname{count}-1\\right],x_{0}\\to x_{0}\\left[1...x_{0}.\\operatorname{count}-1\\right],y_{0}\\to y_{0}\\left[1...y_{0}.\\operatorname{count}-1\\right],w_{eights}\\to w_{eights}\\left[1...w_{eights}.\\operatorname{count}-1\\right],m_{ethod}\\to m_{ethod}\\left[1...m_{ethod}.\\operatorname{count}-1\\right]\\right),\\left(t_{0}\\to\\operatorname{join}\\left(t_{0}\\left[1...i-1\\right],t_{0}\\left[i+1...\\right]\\right),x_{0}\\to\\operatorname{join}\\left(x_{0}\\left[1...i-1\\right],x_{0}\\left[i+1...\\right]\\right),y_{0}\\to\\operatorname{join}\\left(y_{0}\\left[1...i-1\\right],y_{0}\\left[i+1...\\right]\\right),w_{eights}\\to\\operatorname{join}\\left(w_{eights}\\left[1...i-1\\right],w_{eights}\\left[i+1...\\right]\\right),m_{ethod}\\to\\operatorname{join}\\left(m_{ethod}\\left[1...i-1\\right],m_{ethod}\\left[i+1...\\right]\\right)\\right)\\right\\}"
+        "latex": "r_{emovePoint}\\left(i\\right)=\\left\\{i=1:\\left(t_{0}\\to t_{0}\\left[2...\\right],x_{0}\\to x_{0}\\left[2...\\right],y_{0}\\to y_{0}\\left[2...\\right],w_{eights}\\to w_{eights}\\left[2...\\right],m_{ethods}\\to m_{ethods}\\left[2...\\right]\\right),i=t_{0}.\\operatorname{count}:\\left(t_{0}\\to t_{0}\\left[1...t_{0}.\\operatorname{count}-1\\right],x_{0}\\to x_{0}\\left[1...x_{0}.\\operatorname{count}-1\\right],y_{0}\\to y_{0}\\left[1...y_{0}.\\operatorname{count}-1\\right],w_{eights}\\to w_{eights}\\left[1...w_{eights}.\\operatorname{count}-1\\right],m_{ethods}\\to m_{ethods}\\left[1...m_{ethods}.\\operatorname{count}-1\\right]\\right),\\left(t_{0}\\to\\operatorname{join}\\left(t_{0}\\left[1...i-1\\right],t_{0}\\left[i+1...\\right]\\right),x_{0}\\to\\operatorname{join}\\left(x_{0}\\left[1...i-1\\right],x_{0}\\left[i+1...\\right]\\right),y_{0}\\to\\operatorname{join}\\left(y_{0}\\left[1...i-1\\right],y_{0}\\left[i+1...\\right]\\right),w_{eights}\\to\\operatorname{join}\\left(w_{eights}\\left[1...i-1\\right],w_{eights}\\left[i+1...\\right]\\right),m_{ethods}\\to\\operatorname{join}\\left(m_{ethods}\\left[1...i-1\\right],m_{ethods}\\left[i+1...\\right]\\right)\\right)\\right\\}"
       },
       {
         "type": "expression",

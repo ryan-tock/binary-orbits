@@ -23,7 +23,7 @@ function read_variable(variable) {
     }
 }
 
-function set_variable(variable, value) {
+export function set_variable(variable, value) {
     let expressions = state['expressions']['list']
     for (const i in expressions) {
         if (Object.hasOwn(expressions[i], 'latex')) {
@@ -32,6 +32,8 @@ function set_variable(variable, value) {
             }
         }
     }
+
+    calculator.setState(state);
 }
 
 function read_data() {
@@ -84,6 +86,4 @@ export function set_orbit(data, parameters) {
     set_variable("y_{0}", "\\left[" + y.join(", ") + "\\right]");
     set_variable("w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
     set_variable("m_{ethod}", "\\left[" + methods.join(", ") + "\\right]");
-
-    calculator.setState(state);
 }
