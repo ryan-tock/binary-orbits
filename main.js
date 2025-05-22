@@ -9,7 +9,15 @@ const optimizeButton = document.getElementById("optimize");
 const periodLowInput = document.getElementById("period-low");
 const periodHighInput = document.getElementById("period-high");
 
-var periodLow = 5;
+const semiMajor = document.getElementById("semi-major");
+const eccentricity = document.getElementById("eccentricity");
+const inclination = document.getElementById("inclination");
+const node = document.getElementById("node");
+const periapsis = document.getElementById("periapsis");
+const meanAnomaly = document.getElementById("mean-anomaly");
+const period = document.getElementById("period");
+
+var periodLow = 2;
 var periodHigh = 40;
 
 export async function initOptimiziaton() {
@@ -26,6 +34,15 @@ export async function initOptimiziaton() {
     .then(result => {
         set_orbit(activeData, result);
         set_variable("s_{howErrorLines}", 1);
+
+        semiMajor.innerText = "" + result[0]
+        eccentricity.innerText = "" + result[1]
+        inclination.innerText = "" + (result[2] * 180 / Math.PI)
+        node.innerText = "" + (result[3] * 180 / Math.PI)
+        periapsis.innerText = "" + (result[4] * 180 / Math.PI)
+        meanAnomaly.innerText = "" + (result[5] * 180 / Math.PI)
+        period.innerText = "" + result[6]
+
         console.log("fitted!");
         optimizeButton.disabled = false;
     })

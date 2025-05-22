@@ -19,9 +19,18 @@
 
     <br><br>
     <div>Period bound</div>
-    <input type="text" id="period-low" value="5" style="width: 50px"> yr - <input type="text" id="period-high" value="40" style="width: 50px"> yr
+    <input type="text" id="period-low" value="2" style="width: 50px"> yr - <input type="text" id="period-high" value="40" style="width: 50px"> yr
 
     <div id="calculator" style="width: 1000px; height: 800px;"></div>
+
+    <h3>Orbital Parameters</h3>
+    Semi Major Axis (arcseconds): <div id="semi-major"></div><br>
+    Eccentricity: <div id="eccentricity"></div><br>
+    Inclination (degrees): <div id="inclination"></div><br>
+    Longitude of the Ascending Node (degrees): <div id="node"></div><br>
+    Argument of Periapsis (degrees): <div id="periapsis"></div><br>
+    Mean Anomaly at Epoch (degrees): <div id="mean-anomaly"></div><br>
+    Period (years): <div id="period"></div>
 
     <script type="module">
         import { initOptimiziaton } from './main.js';
