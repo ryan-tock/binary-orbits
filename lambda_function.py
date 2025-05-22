@@ -64,8 +64,10 @@ def calc_loss(parameters, data):
     return error
 
 def lambda_handler(event, context):
-    data = json.loads(event['body'])
-    bounds = [(0,0), (0, 0.95), (0, math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (1, 1000)]
+    body = json.loads(event['body'])
+    data = body['data']
+    period_bound = body['periodBound']
+    bounds = [(0,0), (0, 0.95), (0, math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (period_bound[0], period_bound[1])]
     result = differential_evolution(calc_loss, bounds, args=(data,))
     parameters = result.x.tolist()
     _ = calc_loss(parameters, data) # to get the semi major axis from least squares regression
