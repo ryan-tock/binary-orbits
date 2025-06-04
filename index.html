@@ -11,6 +11,9 @@
 </head>
 <body>
     <h1>Binary Orbit 3D Visualizer</h1>
+    <label for="sample-data">Use sample data? </label>
+    <input type="checkbox" id="sample-data" checked>
+    <br>
     <input type="file" id="file-input" accept=".json">
     <select id="key-dropdown" disabled>
         <option value="">Select an Orbit</option>
@@ -32,6 +35,9 @@
 
     <div id="calculator" style="width: 1000px; height: 800px;"></div>
 
+    <br>
+    <button id="download">Download updated data file</button>
+
     <h3>Orbital Parameters</h3>
     Semi Major Axis (arcseconds): <div id="semi-major"></div><br>
     Eccentricity: <div id="eccentricity"></div><br>
@@ -40,11 +46,5 @@
     Argument of Periapsis (degrees): <div id="periapsis"></div><br>
     Mean Anomaly at Epoch (degrees): <div id="mean-anomaly"></div><br>
     Period (years): <div id="period"></div>
-
-    <script type="module">
-        import { initOptimiziaton } from './main.js';
-        const button = document.getElementById('optimize');
-        button.addEventListener('click', initOptimiziaton);
-    </script>
 </body>
 </html>

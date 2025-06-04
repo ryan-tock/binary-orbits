@@ -1,8 +1,11 @@
-import { set_orbit, set_variable } from "./desmos.js";
+import { setOrbit, setVariable, readData } from "./desmos.js";
 
 let data;
+let sampleData;
 let activeData;
+let activeOrbit;
 
+const sampleDataCheck = document.getElementById("sample-data");
 const fileInput = document.getElementById("file-input");
 const keyDropdown = document.getElementById("key-dropdown");
 const optimizeButton = document.getElementById("optimize");
@@ -24,12 +27,16 @@ const flipX = document.getElementById("flip-x");
 const flipY = document.getElementById("flip-y");
 const flipXY = document.getElementById("flip-xy");
 
+const downloadButton = document.getElementById("download");
+
 var periodLow = 2;
 var periodHigh = 40;
 
-export async function initOptimiziaton() {
+optimizeButton.addEventListener('click', (_) => {
     console.log("beginning fit");
     optimizeButton.disabled = true;
+    data[activeOrbit]['data'] = readData();
+    activeData = data[activeOrbit]['data'];
     fetch('https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process', {
         method: 'POST',
         headers: {
@@ -39,8 +46,8 @@ export async function initOptimiziaton() {
     })
     .then(response => response.json())
     .then(result => {
-        set_orbit(activeData, result);
-        set_variable("s_{howErrorLines}", 1);
+        setOrbit(activeData, result);
+        setVariable("s_{howErrorLines}", 1);
 
         semiMajor.innerText = "" + result[0]
         eccentricity.innerText = "" + result[1]
@@ -57,9 +64,9 @@ export async function initOptimiziaton() {
         console.error('Error:', error);
         optimizeButton.disabled = false;
     });
-}
+});
 
-fileInput.addEventListener('change', event => {
+fileInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
 
     if (file) {
@@ -93,14 +100,29 @@ function populateDropdown() {
     keyDropdown.disabled = false;
 }
 
-keyDropdown.addEventListener('change', (event) => {
-    var active_orbit = event.target.value
+sampleDataCheck.addEventListener('change', (_) => {
+    var usingSample = sampleDataCheck.checked;
 
-    if (active_orbit && data[active_orbit]) {
-        activeData = data[active_orbit]['data'];
-        set_orbit(activeData, [0, 0, 0, 0, 0, 0, 1]);
-        set_variable("s_{howErrorLines}", 0);
-        set_variable("h_{ighlightedPoints}", "\\left[\\right]");
+    if (usingSample) {
+        data = JSON.parse(JSON.stringify(sampleData));
+        fileInput.hidden = true;
+        populateDropdown();
+    } else {
+        data = undefined;
+        fileInput.hidden = false;
+        keyDropdown.options.length = 1;
+        keyDropdown.disabled = true;
+    }
+});
+
+keyDropdown.addEventListener('change', (event) => {
+    activeOrbit = event.target.value
+
+    if (activeOrbit && data[activeOrbit]) {
+        activeData = data[activeOrbit]['data'];
+        setOrbit(activeData, [0, 0, 0, 0, 0, 0, 1]);
+        setVariable("s_{howErrorLines}", 0);
+        setVariable("h_{ighlightedPoints}", "\\left[\\right]");
         optimizeButton.disabled = false;
     }
 });
@@ -123,60 +145,85 @@ periodHighInput.addEventListener('change', (event) => {
 
 retainPoint.addEventListener('change', (event) => {
     if (retainPoint.checked) {
-        set_variable("e_{nableDataFixing}", 0);
-        set_variable("f_{lipX}", 0);
-        set_variable("f_{lipY}", 0);
-        set_variable("r_{emove}", 0);
-        set_variable("h_{ighlight}", 0);
+        setVariable("e_{nableDataFixing}", 0);
+        setVariable("f_{lipX}", 0);
+        setVariable("f_{lipY}", 0);
+        setVariable("r_{emove}", 0);
+        setVariable("h_{ighlight}", 0);
     }
 });
 
 removePoint.addEventListener('change', (event) => {
     if (removePoint.checked) {
-        set_variable("e_{nableDataFixing}", 1);
-        set_variable("f_{lipX}", 0);
-        set_variable("f_{lipY}", 0);
-        set_variable("r_{emove}", 1);
-        set_variable("h_{ighlight}", 0);
+        setVariable("e_{nableDataFixing}", 1);
+        setVariable("f_{lipX}", 0);
+        setVariable("f_{lipY}", 0);
+        setVariable("r_{emove}", 1);
+        setVariable("h_{ighlight}", 0);
     }
 });
 
 highlightPoint.addEventListener('change', (event) => {
     if (highlightPoint.checked) {
-        set_variable("e_{nableDataFixing}", 1);
-        set_variable("f_{lipX}", 0);
-        set_variable("f_{lipY}", 0);
-        set_variable("r_{emove}", 0);
-        set_variable("h_{ighlight}", 1);
+        setVariable("e_{nableDataFixing}", 1);
+        setVariable("f_{lipX}", 0);
+        setVariable("f_{lipY}", 0);
+        setVariable("r_{emove}", 0);
+        setVariable("h_{ighlight}", 1);
     }
 });
 
 flipX.addEventListener('change', (event) => {
     if (flipX.checked) {
-        set_variable("e_{nableDataFixing}", 1);
-        set_variable("f_{lipX}", 1);
-        set_variable("f_{lipY}", 0);
-        set_variable("r_{emove}", 0);
-        set_variable("h_{ighlight}", 0);
+        setVariable("e_{nableDataFixing}", 1);
+        setVariable("f_{lipX}", 1);
+        setVariable("f_{lipY}", 0);
+        setVariable("r_{emove}", 0);
+        setVariable("h_{ighlight}", 0);
     }
 });
 
 flipY.addEventListener('change', (event) => {
     if (flipY.checked) {
-        set_variable("e_{nableDataFixing}", 1);
-        set_variable("f_{lipX}", 0);
-        set_variable("f_{lipY}", 1);
-        set_variable("r_{emove}", 0);
-        set_variable("h_{ighlight}", 0);
+        setVariable("e_{nableDataFixing}", 1);
+        setVariable("f_{lipX}", 0);
+        setVariable("f_{lipY}", 1);
+        setVariable("r_{emove}", 0);
+        setVariable("h_{ighlight}", 0);
     }
 });
 
 flipXY.addEventListener('change', (event) => {
     if (flipXY.checked) {
-        set_variable("e_{nableDataFixing}", 1);
-        set_variable("f_{lipX}", 1);
-        set_variable("f_{lipY}", 1);
-        set_variable("r_{emove}", 0);
-        set_variable("h_{ighlight}", 0);
+        setVariable("e_{nableDataFixing}", 1);
+        setVariable("f_{lipX}", 1);
+        setVariable("f_{lipY}", 1);
+        setVariable("r_{emove}", 0);
+        setVariable("h_{ighlight}", 0);
     }
+});
+
+downloadButton.addEventListener('click', (event) => {
+    readData();
+
+    const jsonString = JSON.stringify(data, null, 4);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "new_data";
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    document.body.removeChild(a);
+});
+
+window.addEventListener("load", async () => {
+    const timestamp = new Date().getTime(); // can remove after development
+    const response_state = await fetch(`./sample-data.json?cache_bust=${timestamp}`);
+    sampleData = await response_state.json();
+    sampleDataCheck.dispatchEvent(new Event('change', { bubbles: true }));
 });

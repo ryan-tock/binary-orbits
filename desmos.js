@@ -13,7 +13,8 @@ window.addEventListener("load", async () => {
     calculator.setState(state);
 });
 
-function read_variable(variable) {
+function readVariable(variable) {
+    state = calculator.getState();
     let expressions = state['expressions']['list']
     for (const i in expressions) {
         if (Object.hasOwn(expressions[i], 'latex')) {
@@ -24,7 +25,7 @@ function read_variable(variable) {
     }
 }
 
-export function set_variable(variable, value) {
+export function setVariable(variable, value) {
     state = calculator.getState();
     let expressions = state['expressions']['list']
     for (const i in expressions) {
@@ -38,14 +39,16 @@ export function set_variable(variable, value) {
     calculator.setState(state);
 }
 
-function read_data() {
+export function readData() {
+    state = calculator.getState();
+
     var data = [];
 
-    let t = JSON.parse(read_variable(state, 't_{0}').split("\\left")[1].split("\\right")[0] + "]");
-    let x = JSON.parse(read_variable(state, 'x_{0}').split("\\left")[1].split("\\right")[0] + "]");
-    let y = JSON.parse(read_variable(state, 'y_{0}').split("\\left")[1].split("\\right")[0] + "]");
-    let weights = JSON.parse(read_variable(state, 'w_{eights}').split("\\left")[1].split("\\right")[0] + "]");
-    let methods = JSON.parse(read_variable(state, 'm_{ethod}').split("\\left")[1].split("\\right")[0] + "]");
+    let t = JSON.parse(readVariable('t_{0}').split("\\left")[1].split("\\right")[0] + "]");
+    let x = JSON.parse(readVariable('x_{0}').split("\\left")[1].split("\\right")[0] + "]");
+    let y = JSON.parse(readVariable('y_{0}').split("\\left")[1].split("\\right")[0] + "]");
+    let weights = JSON.parse(readVariable('w_{eights}').split("\\left")[1].split("\\right")[0] + "]");
+    let methods = JSON.parse(readVariable('m_{ethods}').split("\\left")[1].split("\\right")[0] + "]");
 
     for (const i in t) {
         data.push({
@@ -60,14 +63,14 @@ function read_data() {
     return data;
 }
 
-export function set_orbit(data, parameters) {
-    set_variable("a", parameters[0]);
-    set_variable("e_{0}", parameters[1]);
-    set_variable("i", parameters[2]);
-    set_variable("\\Omega", parameters[3]);
-    set_variable("\\omega", parameters[4]);
-    set_variable("M_{0}", parameters[5]);
-    set_variable("p", parameters[6]);
+export function setOrbit(data, parameters) {
+    setVariable("a", parameters[0]);
+    setVariable("e_{0}", parameters[1]);
+    setVariable("i", parameters[2]);
+    setVariable("\\Omega", parameters[3]);
+    setVariable("\\omega", parameters[4]);
+    setVariable("M_{0}", parameters[5]);
+    setVariable("p", parameters[6]);
 
     let t = [];
     let x = [];
@@ -83,9 +86,9 @@ export function set_orbit(data, parameters) {
         methods.push(point['method']);
     }
 
-    set_variable("t_{0}", "\\left[" + t.join(", ") + "\\right]");
-    set_variable("x_{0}", "\\left[" + x.join(", ") + "\\right]");
-    set_variable("y_{0}", "\\left[" + y.join(", ") + "\\right]");
-    set_variable("w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
-    set_variable("m_{ethod}", "\\left[" + methods.join(", ") + "\\right]");
+    setVariable("t_{0}", "\\left[" + t.join(", ") + "\\right]");
+    setVariable("x_{0}", "\\left[" + x.join(", ") + "\\right]");
+    setVariable("y_{0}", "\\left[" + y.join(", ") + "\\right]");
+    setVariable("w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
+    setVariable("m_{ethod}", "\\left[" + methods.join(", ") + "\\right]");
 }
