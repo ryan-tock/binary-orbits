@@ -58,12 +58,12 @@
         "id": "1",
         "folderId": "33",
         "color": "#c74440",
-        "latex": "a=0",
+        "latex": "a=0.2322832955380274",
         "slider": {
           "hardMin": true,
           "hardMax": true,
           "min": "0",
-          "max": "1"
+          "max": "20"
         }
       },
       {
@@ -71,7 +71,7 @@
         "id": "2",
         "folderId": "33",
         "color": "#2d70b3",
-        "latex": "e_{0}=0",
+        "latex": "e_{0}=0.2620073292357086",
         "slider": {
           "hardMin": true,
           "hardMax": true,
@@ -84,7 +84,7 @@
         "id": "3",
         "folderId": "33",
         "color": "#388c46",
-        "latex": "i=0",
+        "latex": "i=0.7197047499080239",
         "slider": {
           "hardMin": true,
           "hardMax": true,
@@ -97,7 +97,7 @@
         "id": "4",
         "folderId": "33",
         "color": "#6042a6",
-        "latex": "\\Omega=0",
+        "latex": "\\Omega=0.7736526929553813",
         "slider": {
           "hardMin": true,
           "hardMax": true,
@@ -110,7 +110,7 @@
         "id": "5",
         "folderId": "33",
         "color": "#aaaaaa",
-        "latex": "\\omega=0",
+        "latex": "\\omega=2.536428919457987",
         "slider": {
           "hardMin": true,
           "hardMax": true,
@@ -123,7 +123,7 @@
         "id": "6",
         "folderId": "33",
         "color": "#c74440",
-        "latex": "M_{0}=0",
+        "latex": "M_{0}=0.2832066913851504",
         "slider": {
           "hardMin": true,
           "hardMax": true,
@@ -136,7 +136,7 @@
         "id": "7",
         "folderId": "33",
         "color": "#2d70b3",
-        "latex": "p=1",
+        "latex": "p=39.635278328310996",
         "slider": {
           "hardMin": true,
           "hardMax": true,
@@ -149,7 +149,7 @@
         "id": "111",
         "folderId": "33",
         "color": "#c74440",
-        "latex": "R_{squared}"
+        "latex": "R_{squaredVal}=0"
       },
       {
         "type": "folder",
@@ -496,8 +496,7 @@
       {
         "type": "folder",
         "id": "103",
-        "title": "R^2 calculation",
-        "collapsed": true
+        "title": "R^2 calculation"
       },
       {
         "type": "expression",
@@ -523,15 +522,14 @@
       {
         "type": "folder",
         "id": "81",
-        "title": "Data",
-        "collapsed": true
+        "title": "Data"
       },
       {
         "type": "expression",
         "id": "145",
         "folderId": "81",
         "color": "#6042a6",
-        "latex": "u_{pdate}\\left(i\\right)=\\left\\{e_{nableDataFixing}=1:\\left\\{h_{ighlight}=1:h_{ighlightPoint}\\left(i\\right),r_{emove}=1:\\left(r_{emovePoint}\\left(i\\right),r_{educeHighlighted}\\left(i\\right)\\right),\\left(\\left\\{f_{lipX}=1:f_{lipXPoint}\\left(i\\right)\\right\\},\\left\\{f_{lipY}=1:f_{lipYPoint}\\left(i\\right)\\right\\}\\right)\\right\\}\\right\\}"
+        "latex": "u_{pdate}\\left(i\\right)=\\left\\{e_{nableDataFixing}=1:\\left(R_{squaredVal}\\to R_{squared},\\left\\{h_{ighlight}=1:h_{ighlightPoint}\\left(i\\right),r_{emove}=1:\\left(r_{emovePoint}\\left(i\\right),r_{educeHighlighted}\\left(i\\right)\\right),\\left(\\left\\{f_{lipX}=1:f_{lipXPoint}\\left(i\\right)\\right\\},\\left\\{f_{lipY}=1:f_{lipYPoint}\\left(i\\right)\\right\\}\\right)\\right\\}\\right)\\right\\}"
       },
       {
         "type": "expression",
@@ -587,28 +585,28 @@
         "id": "123",
         "folderId": "81",
         "color": "#2d70b3",
-        "latex": "t_{0}=\\left[\\right]"
+        "latex": "t_{0}=\\left[1890.43,1893.48,1898.44,1900.2,1903.42,1905.45,1907.38,1910.32,1914.46,1915.46,1919.45,1921.45,1923.699,1927.24,1928.61,1932.52,1934.53,1937.5,1940.379,1941.08,1943.31,1950.56,1952.49,1953.52,1957.37,1959.58,1962.35,1964.407,1968.37,1970.416,1972.43,1975.49,1976.722,1981.4557,1981.4666,1983.395,1984.1856,1984.3745,1987.2658,1988.1617,1988.2489,1989.2264,1991.3179,1992.3063,1993.0892,1995.4353,1997.1253,2004.554,2006.1917,2008.4554\\right]"
       },
       {
         "type": "expression",
         "id": "124",
         "folderId": "81",
         "color": "#388c46",
-        "latex": "x_{0}=\\left[\\right]"
+        "latex": "x_{0}=\\left[0.15,0.05,-0.119,-0.135,-0.15,-0.2,-0.226,-0.135,-0.138,-0.105,0.074,0.147,0.184,0.178,0.17,0.07,0.021,-0.097,-0.19,-0.12,-0.197,-0.219,-0.15,-0.123,-0.005,0.064,0.171,0.18,0.134,0.1,0.064,-0.014,-0.023,-0.149,-0.147,-0.168,-0.193,-0.197,-0.214,-0.214,-0.232,-0.217,-0.19,-0.168,-0.152,-0.076,-0.01,0.26,0.08,0.146\\right]"
       },
       {
         "type": "expression",
         "id": "125",
         "folderId": "81",
         "color": "#6042a6",
-        "latex": "y_{0}=\\left[\\right]"
+        "latex": "y_{0}=\\left[0.187,0.235,0.276,0.257,0.2,0.182,0.128,0.148,-0.099,-0.093,-0.142,-0.15,-0.101,0.112,0.123,0.177,0.229,0.388,0.089,0.242,0.277,0.069,-0.055,-0.086,-0.18,-0.136,-0.083,-0.004,0.121,0.15,0.19,0.22,0.229,0.249,0.25,0.211,0.203,0.199,0.13,0.108,0.093,0.076,0.007,-0.027,-0.05,-0.117,-0.15,0.002,0.001,0.105\\right]"
       },
       {
         "type": "expression",
         "id": "151",
         "folderId": "81",
         "color": "#aaaaaa",
-        "latex": "w_{eights}=\\left[\\right]"
+        "latex": "w_{eights}=\\left[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\\right]"
       },
       {
         "type": "text",
@@ -621,7 +619,7 @@
         "id": "152",
         "folderId": "81",
         "color": "#c74440",
-        "latex": "m_{ethods}=\\left[\\right]"
+        "latex": "m_{ethods}=\\left[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\\right]"
       },
       {
         "type": "folder",

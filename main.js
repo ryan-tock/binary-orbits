@@ -46,16 +46,18 @@ optimizeButton.addEventListener('click', (_) => {
     })
     .then(response => response.json())
     .then(result => {
-        setOrbit(activeData, result);
+        var parameters = result['parameters'];
+        var r_squred = result['r_squared'];
+        setOrbit(activeData, parameters);
         setVariable("s_{howErrorLines}", 1);
 
-        semiMajor.innerText = "" + result[0]
-        eccentricity.innerText = "" + result[1]
-        inclination.innerText = "" + (result[2] * 180 / Math.PI)
-        node.innerText = "" + (result[3] * 180 / Math.PI)
-        periapsis.innerText = "" + (result[4] * 180 / Math.PI)
-        meanAnomaly.innerText = "" + (result[5] * 180 / Math.PI)
-        period.innerText = "" + result[6]
+        semiMajor.innerText = "" + parameters[0]
+        eccentricity.innerText = "" + parameters[1]
+        inclination.innerText = "" + (parameters[2] * 180 / Math.PI)
+        node.innerText = "" + (parameters[3] * 180 / Math.PI)
+        periapsis.innerText = "" + (parameters[4] * 180 / Math.PI)
+        meanAnomaly.innerText = "" + (parameters[5] * 180 / Math.PI)
+        period.innerText = "" + parameters[6]
 
         console.log("fitted!");
         optimizeButton.disabled = false;
