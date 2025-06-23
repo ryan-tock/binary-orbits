@@ -1,0 +1,1 @@
+const DESMOS_API_KEY = "7b0f4a3a647343cebc7c908a66629ec2";

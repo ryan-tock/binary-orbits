@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Orbits</title>
+    <script>
+        const configSource = document.createElement("script");
+        configSource.src = 'config.js';
+
+        configSource.onload = () => {
+            const desmosScript = document.createElement('script');
+            desmosScript.src = `https://www.desmos.com/api/v1.10/calculator.js?apiKey=${DESMOS_API_KEY}`;
+            document.head.appendChild(desmosScript);
+        }
+
+        configSource.onerror = () => {
+            console.log("No desmos API key found!");
+            console.log("If you'd like to use Desmos in your own project, or in a fork of this project, please reach out to partnerships@desmos.com to request your own API key.");
+            console.log("In the mean time, you may use the desmos developer key: dcb31709b452b1cf9dc26972add0fda6");
+            console.log("Create a file called config.js with the following contents");
+            console.log("const DESMOS_API_KEY = \"dcb31709b452b1cf9dc26972add0fda6\";")
+        }
+
+        document.head.appendChild(configSource);
+    </script>
+    <script type="module" src="main.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Binary Orbit 3D Visualizer</h1>
+    <label for="sample-data">Use sample data? </label>
+    <input type="checkbox" id="sample-data" checked>
+    <br>
+    <input type="file" id="file-input" accept=".json">
+    <select id="key-dropdown" disabled>
+        <option value="">Select an Orbit</option>
+    </select>
+    <button id="optimize" disabled>Optimize Orbit!</button>
+
+    <br><br>
+    Period Bound: 
+    <input type="text" id="period-low" value="2" style="width: 50px"> yr - <input type="text" id="period-high" value="40" style="width: 50px"> yr
+    <br><br>
+    On Click
+    <br>
+    <input type="radio" id="retain-point" name="point-manip" checked><label for="retain-point">Do Nothing</label>
+    <input type="radio" id="remove-point" name="point-manip"><label for="remove-point">Remove Point</label>
+    <input type="radio" id="highlight-point" name="point-manip"><label for="highlight-point">Highlight Point</label>
+    <input type="radio" id="flip-x" name="point-manip"><label for="flip-x">Flip X</label>
+    <input type="radio" id="flip-y" name="point-manip"><label for="flip-y">Flip Y</label>
+    <input type="radio" id="flip-xy" name="point-manip"><label for="flip-xy">Flip X and Y</label>
+
+    <div class="aspect-ratio-container">
+        <div class="calculator" id="calculator"></div>
+    </div>
+
+    <br>
+    <button id="download">Download updated data file</button>
+
+    <h3>Orbital Parameters</h3>
+    Semi Major Axis (arcseconds): <div id="semi-major"></div><br>
+    Eccentricity: <div id="eccentricity"></div><br>
+    Inclination (degrees): <div id="inclination"></div><br>
+    Longitude of the Ascending Node (degrees): <div id="node"></div><br>
+    Argument of Periapsis (degrees): <div id="periapsis"></div><br>
+    Mean Anomaly at Epoch (degrees): <div id="mean-anomaly"></div><br>
+    Period (years): <div id="period"></div>
+</body>
+</html>
