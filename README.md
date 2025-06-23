@@ -2,6 +2,8 @@
 
 **Check it out live: [https://ryan-tock.github.io/binary-orbits/](https://ryan-tock.github.io/binary-orbits/)**
 
+If you'd like to use Desmos in your own project, or in a fork of this project, please reach out to partnerships@desmos.com to request your own API key
+
 Welcome to the Binary Orbit 3D Visualizer! This graph is for plotting existing (or new) binary star data in a way that can be easily visualized.
 
 ---

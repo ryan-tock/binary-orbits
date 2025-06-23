@@ -1,17 +1,18 @@
 let state;
 let calculator;
 
+window.onload = async () => {
+    if (typeof Desmos !== 'undefined') {
+        var elt = document.getElementById('calculator');
+        calculator = Desmos.Calculator3D(elt);
+        calculator.updateSettings({"expressions": false});
+        const timestamp = new Date().getTime(); // can remove after development
+        const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
+        state = await response_state.json();
+        calculator.setState(state);
+    }
+}
 
-window.addEventListener("load", async () => {
-    var elt = document.getElementById('calculator');
-    calculator = Desmos.Calculator3D(elt);
-    calculator.updateSettings({"expressions": false});
-
-    const timestamp = new Date().getTime(); // can remove after development
-    const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
-    state = await response_state.json();
-    calculator.setState(state);
-});
 
 function readVariable(variable) {
     state = calculator.getState();
