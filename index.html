@@ -18,9 +18,9 @@
         configSource.onerror = () => {
             console.log("No desmos API key found!");
             console.log("If you'd like to use Desmos in your own project, or in a fork of this project, please reach out to partnerships@desmos.com to request your own API key.");
-            console.log("In the mean time, you may use the desmos developer key: dcb31709b452b1cf9dc26972add0fda6");
-            console.log("Create a file called config.js with the following contents");
-            console.log("const DESMOS_API_KEY = \"dcb31709b452b1cf9dc26972add0fda6\";")
+            console.log("During development, you may use the Desmos developer key. To do so, create a file called config.js with the following contents:");
+            console.log("const DESMOS_API_KEY = \"dcb31709b452b1cf9dc26972add0fda6\";");
+            alert("No desmos API key found! See console for details");
         }
 
         document.head.appendChild(configSource);
