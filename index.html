@@ -11,7 +11,7 @@
 
         configSource.onload = () => {
             const desmosScript = document.createElement('script');
-            desmosScript.src = `https://www.desmos.com/api/v1.10/calculator.js?apiKey=${DESMOS_API_KEY}`;
+            desmosScript.src = `https://www.desmos.com/api/v1.11/calculator.js?apiKey=${DESMOS_API_KEY}`;
             document.head.appendChild(desmosScript);
         }
 
@@ -55,6 +55,9 @@
     <div class="aspect-ratio-container">
         <div class="calculator" id="calculator"></div>
     </div>
+
+    <br>
+    R Squared of the Fit: <div id="r_squared">0</div>
 
     <br>
     <button id="download">Download updated data file</button>

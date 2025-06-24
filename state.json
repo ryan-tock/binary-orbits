@@ -3,40 +3,40 @@
   "randomSeed": "2308bbcb73bd06eda2e39fcad5715ae3",
   "graph": {
     "viewport": {
-      "xmin": -0.3954817549767813,
-      "ymin": -0.3954817549767813,
-      "zmin": -0.3954817549767813,
-      "xmax": 0.3954817549767813,
-      "ymax": 0.3954817549767813,
-      "zmax": 0.3954817549767813
+      "xmin": -2.5,
+      "ymin": -2.5,
+      "zmin": -2.5,
+      "xmax": 2.5,
+      "ymax": 2.5,
+      "zmax": 2.5
     },
     "threeDMode": true,
     "worldRotation3D": [
-      -0.05415522646720328,
-      0.9984426409084648,
-      -0.013397919864265985,
-      -0.9692220187855118,
-      -0.055787927102577475,
-      -0.23978403926371997,
-      -0.24015805158704362,
-      -1.11741359365688e-11,
-      0.9707337998899088
+      -0.12516040968753045,
+      0.9902785934476229,
+      -0.060689201750245184,
+      -0.891051648952689,
+      -0.13909819323856118,
+      -0.43206324946613406,
+      -0.43630474527361407,
+      -2.0926356716338083e-11,
+      0.8997989604638987
     ],
     "axis3D": [
       0,
       0,
-      -1.000000000013347
+      -1.0000000000009945
     ],
-    "speed3D": 0.1967430269005424,
+    "speed3D": 0.2140049491544052,
     "showPlane3D": false,
     "product": "graphing-3d",
     "__v12ViewportLatexStash": {
-      "xmin": "-0.3954817549767813",
-      "xmax": "0.3954817549767813",
-      "ymin": "-0.3954817549767813",
-      "ymax": "0.3954817549767813",
-      "zmin": "-0.3954817549767813",
-      "zmax": "0.3954817549767813"
+      "xmin": "-2.5",
+      "xmax": "2.5",
+      "ymin": "-2.5",
+      "ymax": "2.5",
+      "zmin": "-2.5",
+      "zmax": "2.5"
     }
   },
   "expressions": {
@@ -496,28 +496,29 @@
       {
         "type": "folder",
         "id": "103",
-        "title": "R^2 calculation"
+        "title": "R^2 calculation",
+        "collapsed": true
       },
       {
         "type": "expression",
         "id": "169",
         "folderId": "103",
         "color": "#aaaaaa",
-        "latex": "w_{eightedXMean}=\\frac{\\operatorname{total}\\left(x_{0}w_{eights}\\right)}{\\operatorname{total}\\left(w_{eights}\\right)}"
+        "latex": "w_{eightedXMean}\\left(x,w\\right)=\\frac{\\operatorname{total}\\left(xw\\right)}{\\operatorname{total}\\left(w\\right)}"
       },
       {
         "type": "expression",
         "id": "171",
         "folderId": "103",
         "color": "#2d70b3",
-        "latex": "w_{eightedYMean}=\\frac{\\operatorname{total}\\left(y_{0}w_{eights}\\right)}{\\operatorname{total}\\left(w_{eights}\\right)}"
+        "latex": "w_{eightedYMean}\\left(y,w\\right)=\\frac{\\operatorname{total}\\left(yw\\right)}{\\operatorname{total}\\left(w\\right)}"
       },
       {
         "type": "expression",
         "id": "172",
         "folderId": "103",
         "color": "#388c46",
-        "latex": "R_{squared}=1-\\frac{\\operatorname{total}\\left(w_{eights}\\left|p_{os}\\left(t_{0}\\right)-\\left(x_{0},y_{0},p_{os}\\left(t_{0}\\right).z\\right)\\right|^{2}\\right)}{\\operatorname{total}\\left(w_{eights}\\left|\\left(w_{eightedXMean},w_{eightedYMean}\\right)-\\left(x_{0},y_{0}\\right)\\right|^{2}\\right)}"
+        "latex": "R_{squared}\\left(x,y,t,w\\right)=1-\\frac{\\operatorname{total}\\left(w\\left|p_{os}\\left(t\\right)-\\left(x,y,p_{os}\\left(t\\right).z\\right)\\right|^{2}\\right)}{\\operatorname{total}\\left(w\\left|\\left(w_{eightedXMean}\\left(x,w\\right),w_{eightedYMean}\\left(y,w\\right)\\right)-\\left(x,y\\right)\\right|^{2}\\right)}"
       },
       {
         "type": "folder",
@@ -529,42 +530,7 @@
         "id": "145",
         "folderId": "81",
         "color": "#6042a6",
-        "latex": "u_{pdate}\\left(i\\right)=\\left\\{e_{nableDataFixing}=1:\\left(R_{squaredVal}\\to R_{squared},\\left\\{h_{ighlight}=1:h_{ighlightPoint}\\left(i\\right),r_{emove}=1:\\left(r_{emovePoint}\\left(i\\right),r_{educeHighlighted}\\left(i\\right)\\right),\\left(\\left\\{f_{lipX}=1:f_{lipXPoint}\\left(i\\right)\\right\\},\\left\\{f_{lipY}=1:f_{lipYPoint}\\left(i\\right)\\right\\}\\right)\\right\\}\\right)\\right\\}"
-      },
-      {
-        "type": "expression",
-        "id": "137",
-        "folderId": "81",
-        "color": "#c74440",
-        "latex": "f_{lipXPoint}\\left(i\\right)=\\left\\{i=1:x_{0}\\to\\operatorname{join}\\left(-x_{0}\\left[1\\right],x_{0}\\left[2...\\right]\\right),i=x_{0}.\\operatorname{count}:x_{0}\\to\\operatorname{join}\\left(x_{0}\\left[1...x_{0}.\\operatorname{count}-1\\right],-x_{0}\\left[i\\right]\\right),x_{0}\\to\\operatorname{join}\\left(x_{0}\\left[1...i-1\\right],-x_{0}\\left[i\\right],x_{0}\\left[i+1...\\right]\\right)\\right\\}"
-      },
-      {
-        "type": "expression",
-        "id": "138",
-        "folderId": "81",
-        "color": "#2d70b3",
-        "latex": "f_{lipYPoint}\\left(i\\right)=\\left\\{i=1:y_{0}\\to\\operatorname{join}\\left(-y_{0}\\left[1\\right],y_{0}\\left[2...\\right]\\right),i=y_{0}.\\operatorname{count}:y_{0}\\to\\operatorname{join}\\left(y_{0}\\left[1...y_{0}.\\operatorname{count}-1\\right],-y_{0}\\left[i\\right]\\right),y_{0}\\to\\operatorname{join}\\left(y_{0}\\left[1...i-1\\right],-y_{0}\\left[i\\right],y_{0}\\left[i+1...\\right]\\right)\\right\\}"
-      },
-      {
-        "type": "expression",
-        "id": "139",
-        "folderId": "81",
-        "color": "#388c46",
-        "latex": "r_{emovePoint}\\left(i\\right)=\\left\\{i=1:\\left(t_{0}\\to t_{0}\\left[2...\\right],x_{0}\\to x_{0}\\left[2...\\right],y_{0}\\to y_{0}\\left[2...\\right],w_{eights}\\to w_{eights}\\left[2...\\right],m_{ethods}\\to m_{ethods}\\left[2...\\right]\\right),i=t_{0}.\\operatorname{count}:\\left(t_{0}\\to t_{0}\\left[1...t_{0}.\\operatorname{count}-1\\right],x_{0}\\to x_{0}\\left[1...x_{0}.\\operatorname{count}-1\\right],y_{0}\\to y_{0}\\left[1...y_{0}.\\operatorname{count}-1\\right],w_{eights}\\to w_{eights}\\left[1...w_{eights}.\\operatorname{count}-1\\right],m_{ethods}\\to m_{ethods}\\left[1...m_{ethods}.\\operatorname{count}-1\\right]\\right),\\left(t_{0}\\to\\operatorname{join}\\left(t_{0}\\left[1...i-1\\right],t_{0}\\left[i+1...\\right]\\right),x_{0}\\to\\operatorname{join}\\left(x_{0}\\left[1...i-1\\right],x_{0}\\left[i+1...\\right]\\right),y_{0}\\to\\operatorname{join}\\left(y_{0}\\left[1...i-1\\right],y_{0}\\left[i+1...\\right]\\right),w_{eights}\\to\\operatorname{join}\\left(w_{eights}\\left[1...i-1\\right],w_{eights}\\left[i+1...\\right]\\right),m_{ethods}\\to\\operatorname{join}\\left(m_{ethods}\\left[1...i-1\\right],m_{ethods}\\left[i+1...\\right]\\right)\\right)\\right\\}"
-      },
-      {
-        "type": "expression",
-        "id": "177",
-        "folderId": "81",
-        "color": "#388c46",
-        "latex": "i_{sHighlighted}\\left(i\\right)=h_{ighlightedPoints}\\left[h_{ighlightedPoints}=i\\right].\\operatorname{count}"
-      },
-      {
-        "type": "expression",
-        "id": "185",
-        "folderId": "81",
-        "color": "#6042a6",
-        "latex": "h_{ighlightRemoved}\\left(i\\right)=h_{ighlightedPoints}\\left[\\left\\{h_{ighlightedPoints}=i:1,0\\right\\}=0\\right]"
+        "latex": "u_{pdate}\\left(i\\right)=\\left\\{e_{nableDataFixing}=1:\\left\\{h_{ighlight}=1:h_{ighlightPoint}\\left(i\\right),r_{emove}=1:r_{emovePoint}\\left(i\\right),f_{lipX}+f_{lipY}=2:f_{lipXYPoint}\\left(i\\right),f_{lipX}=1:f_{lipXPoint}\\left(i\\right),f_{lipY}=1:f_{lipYPoint}\\left(i\\right)\\right\\}\\right\\}"
       },
       {
         "type": "expression",
@@ -575,10 +541,59 @@
       },
       {
         "type": "expression",
-        "id": "184",
+        "id": "189",
+        "folderId": "81",
+        "color": "#6042a6",
+        "latex": "r_{emovePoint}\\left(i\\right)=\\left(t_{0}\\to r_{emovedFromList}\\left(i,t_{0}\\right),x_{0}\\to r_{emovedFromList}\\left(i,x_{0}\\right),y_{0}\\to r_{emovedFromList}\\left(i,y_{0}\\right),w_{eights}\\to r_{emovedFromList}\\left(i,w_{eights}\\right),m_{ethods}\\to r_{emovedFromList}\\left(i,m_{ethods}\\right),h_{ighlightedPoints}\\to\\left\\{h_{ighlightRemoved}\\left(i\\right)>i:h_{ighlightRemoved}\\left(i\\right)-1,h_{ighlightRemoved}\\left(i\\right)\\right\\},R_{squaredVal}\\to R_{squared}\\left(r_{emovedFromList}\\left(i,x_{0}\\right),r_{emovedFromList}\\left(i,y_{0}\\right),r_{emovedFromList}\\left(i,t_{0}\\right),r_{emovedFromList}\\left(i,w_{eights}\\right)\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "190",
+        "folderId": "81",
+        "color": "#aaaaaa",
+        "latex": "f_{lipXPoint}\\left(i\\right)=\\left(x_{0}\\to f_{lippedPoint}\\left(i,x_{0}\\right),R_{squaredVal}\\to R_{squared}\\left(f_{lippedPoint}\\left(i,x_{0}\\right),y_{0},t_{0},w_{eights}\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "191",
+        "folderId": "81",
+        "color": "#c74440",
+        "latex": "f_{lipYPoint}\\left(i\\right)=\\left(y_{0}\\to f_{lippedPoint}\\left(i,y_{0}\\right),R_{squaredVal}\\to R_{squared}\\left(x_{0},f_{lippedPoint}\\left(i,y_{0}\\right),t_{0},w_{eights}\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "192",
+        "folderId": "81",
+        "color": "#2d70b3",
+        "latex": "f_{lipXYPoint}\\left(i\\right)=\\left(x_{0}\\to f_{lippedPoint}\\left(i,x_{0}\\right),y_{0}\\to f_{lippedPoint}\\left(i,y_{0}\\right),R_{squaredVal}\\to R_{squared}\\left(f_{lippedPoint}\\left(i,x_{0}\\right),f_{lippedPoint}\\left(i,y_{0}\\right),t_{0},w_{eights}\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "187",
+        "folderId": "81",
+        "color": "#2d70b3",
+        "latex": "r_{emovedFromList}\\left(i,L\\right)=\\left\\{i=1:L\\left[2...\\right],i=L.\\operatorname{count}:L\\left[1...L.\\operatorname{count}-1\\right],\\operatorname{join}\\left(L\\left[1...i-1\\right],L\\left[i+1...\\right]\\right)\\right\\}"
+      },
+      {
+        "type": "expression",
+        "id": "188",
         "folderId": "81",
         "color": "#388c46",
-        "latex": "r_{educeHighlighted}\\left(i\\right)=h_{ighlightedPoints}\\to\\left\\{h_{ighlightRemoved}\\left(i\\right)>i:h_{ighlightRemoved}\\left(i\\right)-1,h_{ighlightRemoved}\\left(i\\right)\\right\\}"
+        "latex": "f_{lippedPoint}\\left(i,L\\right)=\\left\\{i=1:\\operatorname{join}\\left(-L\\left[1\\right],L\\left[2...\\right]\\right),i=L.\\operatorname{count}:\\operatorname{join}\\left(x_{0}\\left[1...L.\\operatorname{count}-1\\right],-L\\left[i\\right]\\right),\\operatorname{join}\\left(L\\left[1...i-1\\right],-L\\left[i\\right],L\\left[i+1...\\right]\\right)\\right\\}"
+      },
+      {
+        "type": "expression",
+        "id": "185",
+        "folderId": "81",
+        "color": "#6042a6",
+        "latex": "h_{ighlightRemoved}\\left(i\\right)=h_{ighlightedPoints}\\left[\\left\\{h_{ighlightedPoints}=i:1,0\\right\\}=0\\right]"
+      },
+      {
+        "type": "expression",
+        "id": "193",
+        "folderId": "81",
+        "color": "#388c46",
+        "latex": "i_{sHighlighted}\\left(i\\right)=h_{ighlightedPoints}\\left[h_{ighlightedPoints}=i\\right].\\operatorname{count}"
       },
       {
         "type": "expression",

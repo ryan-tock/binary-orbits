@@ -47,8 +47,8 @@ optimizeButton.addEventListener('click', (_) => {
     .then(response => response.json())
     .then(result => {
         var parameters = result['parameters'];
-        var r_squred = result['r_squared'];
-        setOrbit(activeData, parameters);
+        var r_squared = result['r_squared'];
+        setOrbit(activeData, parameters, r_squared);
         setVariable("s_{howErrorLines}", 1);
 
         semiMajor.innerText = "" + parameters[0]
@@ -122,7 +122,7 @@ keyDropdown.addEventListener('change', (event) => {
 
     if (activeOrbit && data[activeOrbit]) {
         activeData = data[activeOrbit]['data'];
-        setOrbit(activeData, [0, 0, 0, 0, 0, 0, 1]);
+        setOrbit(activeData, [0, 0, 0, 0, 0, 0, 1], 0);
         setVariable("s_{howErrorLines}", 0);
         setVariable("h_{ighlightedPoints}", "\\left[\\right]");
         optimizeButton.disabled = false;
