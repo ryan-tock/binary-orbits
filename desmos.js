@@ -1,5 +1,6 @@
 let state;
 let calculator;
+let r_squared_elem = document.getElementById("r_squared")
 
 window.onload = async () => {
     if (typeof Desmos !== 'undefined') {
@@ -11,6 +12,11 @@ window.onload = async () => {
         state = await response_state.json();
         calculator.setState(state);
     }
+
+    calculator.observeEvent('change', function() {
+        var r_squared = readVariable("R_{squaredVal}");
+        r_squared_elem.innerText = "" + r_squared;
+    });
 }
 
 
@@ -64,7 +70,7 @@ export function readData() {
     return data;
 }
 
-export function setOrbit(data, parameters) {
+export function setOrbit(data, parameters, r_squared) {
     setVariable("a", parameters[0]);
     setVariable("e_{0}", parameters[1]);
     setVariable("i", parameters[2]);
@@ -91,5 +97,8 @@ export function setOrbit(data, parameters) {
     setVariable("x_{0}", "\\left[" + x.join(", ") + "\\right]");
     setVariable("y_{0}", "\\left[" + y.join(", ") + "\\right]");
     setVariable("w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
-    setVariable("m_{ethod}", "\\left[" + methods.join(", ") + "\\right]");
+    setVariable("m_{ethods}", "\\left[" + methods.join(", ") + "\\right]");
+
+    setVariable("R_{squaredVal}", r_squared);
+    r_squared_elem.innerText = "" + r_squared;
 }
