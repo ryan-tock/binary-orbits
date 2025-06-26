@@ -1,4 +1,5 @@
 import { setOrbit, setVariable, readData } from "./desmos.js";
+import { API_ENDPOINT_URL } from "./config.js"
 
 let data;
 let sampleData;
@@ -20,50 +21,42 @@ const periapsis = document.getElementById("periapsis");
 const meanAnomaly = document.getElementById("mean-anomaly");
 const period = document.getElementById("period");
 
-const retainPoint = document.getElementById("retain-point");
-const removePoint = document.getElementById("remove-point");
-const highlightPoint = document.getElementById("highlight-point");
-const flipX = document.getElementById("flip-x");
-const flipY = document.getElementById("flip-y");
-const flipXY = document.getElementById("flip-xy");
-
 const downloadButton = document.getElementById("download");
 
-var periodLow = 2;
-var periodHigh = 40;
+var periodLow = parseInt(periodLowInput.value);
+var periodHigh = parseInt(periodHighInput.value);
 
-optimizeButton.addEventListener('click', (_) => {
-    console.log("beginning fit");
+optimizeButton.addEventListener('click', async (_) => {
+    console.log("beginning orbital fit");
     optimizeButton.disabled = true;
     data[activeOrbit]['data'] = readData();
     activeData = data[activeOrbit]['data'];
-    fetch('https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process', {
+    const response = await fetch(API_ENDPOINT_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: "{\"data\": " + JSON.stringify(activeData) + ", \"periodBound\": [" + periodLow + ", " + periodHigh + "]}"
-    })
-    .then(response => response.json())
-    .then(parameters => {
-        setOrbit(activeData, parameters);
-        setVariable("s_{howErrorLines}", 1);
-
-        semiMajor.value = "" + parameters[0]
-        eccentricity.value = "" + parameters[1]
-        inclination.value = "" + (parameters[2] * 180 / Math.PI)
-        node.value = "" + (parameters[3] * 180 / Math.PI)
-        periapsis.value = "" + (parameters[4] * 180 / Math.PI)
-        meanAnomaly.value = "" + (parameters[5] * 180 / Math.PI)
-        period.value = "" + parameters[6]
-
-        console.log("fitted!");
-        optimizeButton.disabled = false;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        optimizeButton.disabled = false;
     });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error with status: ${response.status}`);
+    }
+
+    const parameters = await response.json();
+    setOrbit(activeData, parameters);
+    setVariable("s_{howErrorLines}", 1);
+
+    semiMajor.value = "" + parameters[0]
+    eccentricity.value = "" + parameters[1]
+    inclination.value = "" + (parameters[2] * 180 / Math.PI)
+    node.value = "" + (parameters[3] * 180 / Math.PI)
+    periapsis.value = "" + (parameters[4] * 180 / Math.PI)
+    meanAnomaly.value = "" + (parameters[5] * 180 / Math.PI)
+    period.value = "" + parameters[6]
+
+    console.log("fitted!");
+    optimizeButton.disabled = false;
 });
 
 fileInput.addEventListener('change', (event) => {
@@ -143,58 +136,26 @@ periodHighInput.addEventListener('change', (event) => {
     periodHighInput.value = "" + periodHigh;
 });
 
-retainPoint.addEventListener('change', (event) => {
-    if (retainPoint.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
-});
+const pointManipulationModes = {
+    'retain-point': { remove: 0, highlight: 0, flipX: 0, flipY: 0 },
+    'remove-point': { remove: 1, highlight: 0, flipX: 0, flipY: 0 },
+    'highlight-point': { remove: 0, highlight: 1, flipX: 0, flipY: 0 },
+    'flip-x': { remove: 0, highlight: 0, flipX: 1, flipY: 0 },
+    'flip-y': { remove: 0, highlight: 0, flipX: 0, flipY: 1 },
+    'flip-xy': { remove: 0, highlight: 0, flipX: 1, flipY: 1 },
+};
 
-removePoint.addEventListener('change', (event) => {
-    if (removePoint.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 1);
-        setVariable("h_{ighlight}", 0);
-    }
-});
-
-highlightPoint.addEventListener('change', (event) => {
-    if (highlightPoint.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 1);
-    }
-});
-
-flipX.addEventListener('change', (event) => {
-    if (flipX.checked) {
-        setVariable("f_{lipX}", 1);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
-});
-
-flipY.addEventListener('change', (event) => {
-    if (flipY.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 1);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
-});
-
-flipXY.addEventListener('change', (event) => {
-    if (flipXY.checked) {
-        setVariable("f_{lipX}", 1);
-        setVariable("f_{lipY}", 1);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
+document.querySelectorAll('input[name="point-manip"]').forEach(radio => {
+    radio.addEventListener('change', (event) => {
+        const mode = event.target.id;
+        if (event.target.checked && pointManipulationModes[mode]) {
+            const settings = pointManipulationModes[mode];
+            setVariable("r_{emove}", settings.remove);
+            setVariable("h_{ighlight}", settings.highlight);
+            setVariable("f_{lipX}", settings.flipX);
+            setVariable("f_{lipY}", settings.flipY);
+        }
+    });
 });
 
 downloadButton.addEventListener('click', (event) => {

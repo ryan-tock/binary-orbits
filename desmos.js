@@ -2,19 +2,20 @@ let calculator;
 let rSquaredElem = document.getElementById("r_squared");
 
 window.onload = async () => {
-    if (typeof Desmos !== 'undefined') {
-        var elt = document.getElementById('calculator');
-        calculator = Desmos.Calculator3D(elt);
-        calculator.updateSettings({"expressions": false});
-        const timestamp = new Date().getTime(); // can remove after development
-        const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
-        var state = await response_state.json();
-        calculator.setState(state);
+    if (typeof Desmos == 'undefined') {
+        return;
     }
+    
+    var elt = document.getElementById('calculator');
+    calculator = Desmos.Calculator3D(elt);
+    calculator.updateSettings({"expressions": false});
+    const timestamp = new Date().getTime(); // can remove after development
+    const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
+    var state = await response_state.json();
+    calculator.setState(state);
 
     var rSquared = calculator.HelperExpression({latex: 'R_{squared}'});
     rSquared.observe('numericValue', function() {
-        console.log("observed change: " + rSquared.numericValue);
         rSquaredElem.innerText = "" + rSquared.numericValue;
     });
 }

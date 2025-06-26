@@ -2,8 +2,6 @@
 
 **Check it out live: [https://ryan-tock.github.io/binary-orbits/](https://ryan-tock.github.io/binary-orbits/)**
 
-If you'd like to use Desmos in your own project, or in a fork of this project, please reach out to partnerships@desmos.com to request your own API key
-
 Welcome to the Binary Orbit 3D Visualizer! This graph is for plotting existing (or new) binary star data in a way that can be easily visualized.
 
 ---
@@ -62,3 +60,13 @@ Welcome to the Binary Orbit 3D Visualizer! This graph is for plotting existing (
     * Click the "Download updated data file" button.
 * **Read Parameters**
     * Read all 7 orbital parametrs at the bottom section of the page.
+
+---
+
+## Forking this Repository
+If you'd like to use Desmos in your own project, or in a fork of this project, please reach out to partnerships@desmos.com to request your own API key.
+If you clone this repository and host it yourself you will immediately get an error. To fix this, create a file called config.js and provide the API key and the AWS endpoint. An example config.js is provided below with the Desmos demonstration API key (only to be used during development) and my AWS endpoint (which will only work on localhost and my site)
+```js
+export const DESMOS_API_KEY = "dcb31709b452b1cf9dc26972add0fda6";
+export const API_ENDPOINT_URL = "https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process";
+```
