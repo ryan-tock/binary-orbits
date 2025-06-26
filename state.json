@@ -3,73 +3,65 @@
   "randomSeed": "2308bbcb73bd06eda2e39fcad5715ae3",
   "graph": {
     "viewport": {
-      "xmin": -2.5,
-      "ymin": -2.5,
-      "zmin": -2.5,
-      "xmax": 2.5,
-      "ymax": 2.5,
-      "zmax": 2.5
+      "xmin": -1.25,
+      "ymin": -1.25,
+      "zmin": -1.25,
+      "xmax": 1.25,
+      "ymax": 1.25,
+      "zmax": 1.25
     },
+    "xAxisLabel": "RA",
+    "yAxisLabel": "Dec",
     "threeDMode": true,
-    "worldRotation3D": [
-      -0.12516040968753045,
-      0.9902785934476229,
-      -0.060689201750245184,
-      -0.891051648952689,
-      -0.13909819323856118,
-      -0.43206324946613406,
-      -0.43630474527361407,
-      -2.0926356716338083e-11,
-      0.8997989604638987
-    ],
+    "showAxisLabels3D": false,
     "axis3D": [
       0,
       0,
-      -1.0000000000009945
+      -1
     ],
-    "speed3D": 0.2140049491544052,
+    "speed3D": 0.2,
     "showPlane3D": false,
     "product": "graphing-3d",
     "__v12ViewportLatexStash": {
-      "xmin": "-2.5",
-      "xmax": "2.5",
-      "ymin": "-2.5",
-      "ymax": "2.5",
-      "zmin": "-2.5",
-      "zmax": "2.5"
+      "xmin": "-1.25",
+      "xmax": "1.25",
+      "ymin": "-1.25",
+      "ymax": "1.25",
+      "zmin": "-1.25",
+      "zmax": "1.25"
     }
   },
   "expressions": {
     "list": [
       {
         "type": "folder",
-        "id": "33",
+        "id": "Orbital Parameters Folder",
         "title": "Orbital Parameters",
         "collapsed": true
       },
       {
         "type": "text",
-        "id": "32",
-        "folderId": "33",
+        "id": "Orbital Parameters Key",
+        "folderId": "Orbital Parameters Folder",
         "text": "a: Semi Major Axis\ne0: Eccentricity\ni: Inclination\nΩ: Longitude of the Ascending Node\n⍵: Argument of Periapsis\nM0: Mean anomaly on Jan 1, 2000\np: Period"
       },
       {
         "type": "expression",
-        "id": "1",
-        "folderId": "33",
+        "id": "a",
+        "folderId": "Orbital Parameters Folder",
         "color": "#c74440",
         "latex": "a=0",
         "slider": {
           "hardMin": true,
           "hardMax": true,
           "min": "0",
-          "max": "20"
+          "max": "1000"
         }
       },
       {
         "type": "expression",
-        "id": "2",
-        "folderId": "33",
+        "id": "e_{0}",
+        "folderId": "Orbital Parameters Folder",
         "color": "#2d70b3",
         "latex": "e_{0}=0",
         "slider": {
@@ -81,8 +73,8 @@
       },
       {
         "type": "expression",
-        "id": "3",
-        "folderId": "33",
+        "id": "i",
+        "folderId": "Orbital Parameters Folder",
         "color": "#388c46",
         "latex": "i=0",
         "slider": {
@@ -94,8 +86,8 @@
       },
       {
         "type": "expression",
-        "id": "4",
-        "folderId": "33",
+        "id": "\\Omega",
+        "folderId": "Orbital Parameters Folder",
         "color": "#6042a6",
         "latex": "\\Omega=0",
         "slider": {
@@ -107,8 +99,8 @@
       },
       {
         "type": "expression",
-        "id": "5",
-        "folderId": "33",
+        "id": "\\omega",
+        "folderId": "Orbital Parameters Folder",
         "color": "#aaaaaa",
         "latex": "\\omega=0",
         "slider": {
@@ -120,8 +112,8 @@
       },
       {
         "type": "expression",
-        "id": "6",
-        "folderId": "33",
+        "id": "M_{0}",
+        "folderId": "Orbital Parameters Folder",
         "color": "#c74440",
         "latex": "M_{0}=0",
         "slider": {
@@ -133,8 +125,8 @@
       },
       {
         "type": "expression",
-        "id": "7",
-        "folderId": "33",
+        "id": "p",
+        "folderId": "Orbital Parameters Folder",
         "color": "#2d70b3",
         "latex": "p=1",
         "slider": {
@@ -145,36 +137,15 @@
         }
       },
       {
-        "type": "expression",
-        "id": "111",
-        "folderId": "33",
-        "color": "#c74440",
-        "latex": "R_{squaredVal}=0"
-      },
-      {
         "type": "folder",
-        "id": "73",
+        "id": "Graph Settings Folder",
         "title": "Graph Settings",
         "collapsed": true
       },
       {
         "type": "expression",
-        "id": "136",
-        "folderId": "73",
-        "color": "#aaaaaa",
-        "latex": "e_{nableDataFixing}=0",
-        "slider": {
-          "hardMin": true,
-          "hardMax": true,
-          "min": "0",
-          "max": "1",
-          "step": "1"
-        }
-      },
-      {
-        "type": "expression",
-        "id": "129",
-        "folderId": "73",
+        "id": "f_{lipX}",
+        "folderId": "Graph Settings Folder",
         "color": "#388c46",
         "latex": "f_{lipX}=0",
         "slider": {
@@ -187,8 +158,8 @@
       },
       {
         "type": "expression",
-        "id": "134",
-        "folderId": "73",
+        "id": "f_{lipY}",
+        "folderId": "Graph Settings Folder",
         "color": "#388c46",
         "latex": "f_{lipY}=0",
         "slider": {
@@ -201,8 +172,8 @@
       },
       {
         "type": "expression",
-        "id": "135",
-        "folderId": "73",
+        "id": "r_{emove}",
+        "folderId": "Graph Settings Folder",
         "color": "#6042a6",
         "latex": "r_{emove}=0",
         "slider": {
@@ -215,8 +186,8 @@
       },
       {
         "type": "expression",
-        "id": "182",
-        "folderId": "73",
+        "id": "h_{ighlight}",
+        "folderId": "Graph Settings Folder",
         "color": "#c74440",
         "latex": "h_{ighlight}=0",
         "slider": {
@@ -229,8 +200,8 @@
       },
       {
         "type": "expression",
-        "id": "112",
-        "folderId": "73",
+        "id": "p_{ointSize}",
+        "folderId": "Graph Settings Folder",
         "color": "#2d70b3",
         "latex": "p_{ointSize}=3",
         "slider": {
@@ -242,14 +213,14 @@
       },
       {
         "type": "text",
-        "id": "148",
-        "folderId": "73",
+        "id": "Point Color Key",
+        "folderId": "Graph Settings Folder",
         "text": "For point color\n0 => Color all points the same\n1 => Color points according to a gradient with respect to observation time\n2 => Color points with respect to the weights\n3 => Color points according to observation type (Historical => Green, Camera => Pink, Speckle => Blue)"
       },
       {
         "type": "expression",
-        "id": "146",
-        "folderId": "73",
+        "id": "p_{ointColor}",
+        "folderId": "Graph Settings Folder",
         "color": "#c74440",
         "latex": "p_{ointColor}=1",
         "slider": {
@@ -262,8 +233,8 @@
       },
       {
         "type": "expression",
-        "id": "181",
-        "folderId": "73",
+        "id": "s_{howErrorLines}",
+        "folderId": "Graph Settings Folder",
         "color": "#2d70b3",
         "latex": "s_{howErrorLines}=1",
         "slider": {
@@ -276,14 +247,14 @@
       },
       {
         "type": "text",
-        "id": "101",
-        "folderId": "73",
-        "text": "Number of iterations the Newton-Raphson method uses. The associated max error is in radians and quantifies approximately how far off the eccentric anomaly is from the true value"
+        "id": "Newton-Raphson Note",
+        "folderId": "Graph Settings Folder",
+        "text": "Number of iterations the Newton-Raphson method uses. The associated max error is approximately how far off the eccentric anomaly is from the true value"
       },
       {
         "type": "expression",
-        "id": "12",
-        "folderId": "73",
+        "id": "i_{terations}",
+        "folderId": "Graph Settings Folder",
         "color": "#2d70b3",
         "latex": "i_{terations}=4",
         "slider": {
@@ -296,178 +267,178 @@
       },
       {
         "type": "expression",
-        "id": "13",
-        "folderId": "73",
+        "id": "m_{axError}",
+        "folderId": "Graph Settings Folder",
         "color": "#388c46",
         "latex": "m_{axError}=\\max\\left(e_{rror}\\left(\\frac{p\\cdot\\left[1...10000\\right]}{10000}\\right)\\right)"
       },
       {
         "type": "folder",
-        "id": "51",
+        "id": "Formulas Folder",
         "title": "Formulas",
         "collapsed": true
       },
       {
         "type": "text",
-        "id": "114",
-        "folderId": "51",
+        "id": "Mean Anomaly Note",
+        "folderId": "Formulas Folder",
         "text": "Mean Anomaly"
       },
       {
         "type": "expression",
-        "id": "23",
-        "folderId": "51",
+        "id": "M(t)",
+        "folderId": "Formulas Folder",
         "color": "#388c46",
         "latex": "M\\left(t\\right)=M_{0}+\\frac{2\\pi}{p}\\left(t-2000\\right)"
       },
       {
         "type": "text",
-        "id": "119",
-        "folderId": "51",
+        "id": "Newton-Raphson Iterator Note",
+        "folderId": "Formulas Folder",
         "text": "Recursive Newton-Raphson iterator for eccentric anomaly"
       },
       {
         "type": "expression",
-        "id": "10",
-        "folderId": "51",
+        "id": "E_{guess}(t,n)",
+        "folderId": "Formulas Folder",
         "color": "#aaaaaa",
         "latex": "E_{guess}\\left(t,n\\right)=\\left\\{n=0:M\\left(t\\right),E_{guess}\\left(t,n-1\\right)+\\frac{\\left(M\\left(t\\right)-E_{guess}\\left(t,n-1\\right)+e_{0}\\sin\\left(E_{guess}\\left(t,n-1\\right)\\right)\\right)}{1-e_{0}\\cos\\left(E_{guess}\\left(t,n-1\\right)\\right)}\\right\\}"
       },
       {
         "type": "expression",
-        "id": "11",
-        "folderId": "51",
+        "id": "M_{guess}(t,n)",
+        "folderId": "Formulas Folder",
         "color": "#c74440",
         "latex": "M_{guess}\\left(t,n\\right)=E_{guess}\\left(t,n\\right)-e_{0}\\sin\\left(E_{guess}\\left(t,n\\right)\\right)"
       },
       {
         "type": "text",
-        "id": "117",
-        "folderId": "51",
+        "id": "Eccentric Anomaly Note",
+        "folderId": "Formulas Folder",
         "text": "Eccentric Anomaly"
       },
       {
         "type": "expression",
-        "id": "14",
-        "folderId": "51",
+        "id": "E(t)",
+        "folderId": "Formulas Folder",
         "color": "#6042a6",
         "latex": "E\\left(t\\right)=E_{guess}\\left(t,i_{terations}\\right)"
       },
       {
         "type": "expression",
-        "id": "15",
-        "folderId": "51",
+        "id": "e_{rror}(t)",
+        "folderId": "Formulas Folder",
         "color": "#aaaaaa",
         "latex": "e_{rror}\\left(t\\right)=\\left|M\\left(t\\right)-M_{guess}\\left(t,i_{terations}\\right)\\right|"
       },
       {
         "type": "expression",
-        "id": "17",
-        "folderId": "51",
+        "id": "\\beta",
+        "folderId": "Formulas Folder",
         "color": "#2d70b3",
         "latex": "\\beta=\\frac{e_{0}}{1+\\sqrt{1-e_{0}^{2}}}"
       },
       {
         "type": "text",
-        "id": "121",
-        "folderId": "51",
+        "id": "True Anomaly Note",
+        "folderId": "Formulas Folder",
         "text": "True Anomaly"
       },
       {
         "type": "expression",
-        "id": "18",
-        "folderId": "51",
+        "id": "T(t)",
+        "folderId": "Formulas Folder",
         "color": "#388c46",
         "latex": "T\\left(t\\right)=E\\left(t\\right)+2\\arctan\\left(\\frac{\\beta\\sin\\left(E\\left(t\\right)\\right)}{1-\\beta\\cos\\left(E\\left(t\\right)\\right)}\\right)"
       },
       {
         "type": "expression",
-        "id": "16",
-        "folderId": "51",
+        "id": "r_{0}(E)",
+        "folderId": "Formulas Folder",
         "color": "#c74440",
         "latex": "r_{0}\\left(E\\right)=a\\left(1-e_{0}\\cos\\left(E\\right)\\right)"
       },
       {
         "type": "expression",
-        "id": "8",
-        "folderId": "51",
+        "id": "x_{1}(r,f)",
+        "folderId": "Formulas Folder",
         "color": "#388c46",
         "latex": "x_{1}\\left(r,f\\right)=r\\left(\\cos\\left(f+\\omega\\right)\\cos\\left(\\Omega-\\frac{3\\pi}{2}\\right)-\\cos\\left(i\\right)\\sin\\left(f+\\omega\\right)\\sin\\left(\\Omega-\\frac{3\\pi}{2}\\right)\\right)"
       },
       {
         "type": "expression",
-        "id": "9",
-        "folderId": "51",
+        "id": "y_{1}(r,f)",
+        "folderId": "Formulas Folder",
         "color": "#6042a6",
         "latex": "y_{1}\\left(r,f\\right)=r\\left(\\cos\\left(i\\right)\\sin\\left(f+\\omega\\right)\\cos\\left(\\Omega-\\frac{3\\pi}{2}\\right)+\\cos\\left(f+\\omega\\right)\\sin\\left(\\Omega-\\frac{3\\pi}{2}\\right)\\right)"
       },
       {
         "type": "expression",
-        "id": "20",
-        "folderId": "51",
+        "id": "z_{1}(r,f)",
+        "folderId": "Formulas Folder",
         "color": "#aaaaaa",
         "latex": "z_{1}\\left(r,f\\right)=r\\sin\\left(f+\\omega\\right)\\sin\\left(i\\right)"
       },
       {
         "type": "expression",
-        "id": "71",
-        "folderId": "51",
+        "id": "p_{os}(t)",
+        "folderId": "Formulas Folder",
         "color": "#388c46",
         "latex": "p_{os}\\left(t\\right)=\\left(\\left(x_{1}\\left(r_{0}\\left(E\\left(t\\right)\\right),T\\left(t\\right)\\right),y_{1}\\left(r_{0}\\left(E\\left(t\\right)\\right),T\\left(t\\right)\\right),z_{1}\\left(r_{0}\\left(E\\left(t\\right)\\right),T\\left(t\\right)\\right)\\right)\\right)"
       },
       {
         "type": "folder",
-        "id": "53",
+        "id": "Data Visualization Folder",
         "title": "Data Visualization",
         "collapsed": true
       },
       {
         "type": "expression",
-        "id": "133",
-        "folderId": "53",
+        "id": "t_{imeGradient}",
+        "folderId": "Data Visualization Folder",
         "color": "#2d70b3",
         "latex": "t_{imeGradient}=\\left[\\left\\{i_{sHighlighted}\\left(i\\right)=1:\\operatorname{rgb}\\left(0,0,0\\right),\\operatorname{hsv}\\left(\\frac{90\\left(t_{0}\\left[i\\right]-\\min\\left(t_{0}\\right)\\right)}{\\max\\left(t_{0}\\right)-\\min\\left(t_{0}\\right)},0.8,0.9\\right)\\right\\}\\operatorname{for}i=\\left[1...t_{0}.\\operatorname{count}\\right]\\right]"
       },
       {
         "type": "expression",
-        "id": "161",
-        "folderId": "53",
+        "id": "w_{eightsGradient}",
+        "folderId": "Data Visualization Folder",
         "color": "#388c46",
         "latex": "w_{eightsGradient}=\\left[\\left\\{i_{sHighlighted}\\left(i\\right)=1:\\operatorname{rgb}\\left(0,0,0\\right),\\operatorname{hsv}\\left(90w_{eights}\\left[i\\right],0.8,0.9\\right)\\right\\}\\operatorname{for}i=\\left[1...w_{eights}.\\operatorname{count}\\right]\\right]"
       },
       {
         "type": "expression",
-        "id": "162",
-        "folderId": "53",
+        "id": "t_{ypeGradient}",
+        "folderId": "Data Visualization Folder",
         "color": "#6042a6",
         "latex": "t_{ypeGradient}=\\left[\\left\\{i_{sHighlighted}\\left(i\\right)=1:\\operatorname{rgb}\\left(0,0,0\\right),\\left\\{m_{ethods}\\left[i\\right]=0:\\operatorname{rgb}\\left(50,205,50\\right),m_{ethods}\\left[i\\right]=1:\\operatorname{rgb}\\left(255,0,127\\right),m_{ethods}\\left[i\\right]=2:\\operatorname{rgb}\\left(0,0,255\\right)\\right\\}\\right\\}\\operatorname{for}i=\\left[1...m_{ethods}.\\operatorname{count}\\right]\\right]"
       },
       {
         "type": "expression",
-        "id": "130",
-        "folderId": "53",
+        "id": "c_{olors}",
+        "folderId": "Data Visualization Folder",
         "color": "#6042a6",
         "latex": "c_{olors}=\\left\\{p_{ointColor}=0:\\left[\\operatorname{rgb}\\left(255,0,0\\right)\\operatorname{for}n=t_{0}\\right],p_{ointColor}=1:t_{imeGradient},p_{ointColor}=2:w_{eightsGradient},t_{ypeGradient}\\right\\}"
       },
       {
         "type": "expression",
-        "id": "143",
-        "folderId": "53",
+        "id": "e_{rrorLines}",
+        "folderId": "Data Visualization Folder",
         "color": "#aaaaaa",
-        "latex": "\\left\\{s_{howErrorLines}=1:\\operatorname{segment}\\left(p_{os}\\left(t_{0}\\right),\\left(x_{0},y_{0},p_{os}\\left(t_{0}\\right).z\\right)\\right)\\right\\}",
+        "latex": "e_{rrorLines}=\\left\\{s_{howErrorLines}=1:\\operatorname{segment}\\left(p_{os}\\left(t_{0}\\right),\\left(x_{0},y_{0},p_{os}\\left(t_{0}\\right).z\\right)\\right)\\right\\}",
         "lineWidth": "0.2p_{ointSize}"
       },
       {
         "type": "expression",
-        "id": "176",
-        "folderId": "53",
+        "id": "h_{ighlightedPoints}",
+        "folderId": "Data Visualization Folder",
         "color": "#2d70b3",
         "latex": "h_{ighlightedPoints}=\\left[\\right]"
       },
       {
         "type": "expression",
-        "id": "86",
-        "folderId": "53",
+        "id": "r_{enderedPoints}",
+        "folderId": "Data Visualization Folder",
         "color": "#c74440",
         "latex": "r_{enderedPoints}=\\left(x_{0},y_{0},p_{os}\\left(t_{0}\\right).z\\right)",
         "colorLatex": "c_{olors}",
@@ -480,8 +451,8 @@
       },
       {
         "type": "expression",
-        "id": "19",
-        "folderId": "53",
+        "id": "p_{os}(t)",
+        "folderId": "Data Visualization Folder",
         "color": "#6042a6",
         "latex": "p_{os}\\left(t\\right)",
         "parametricDomain": {
@@ -495,164 +466,138 @@
       },
       {
         "type": "folder",
-        "id": "103",
+        "id": "R^2 calculation Folder",
         "title": "R^2 calculation",
         "collapsed": true
       },
       {
         "type": "expression",
-        "id": "169",
-        "folderId": "103",
+        "id": "w_{eightedXMean}",
+        "folderId": "R^2 calculation Folder",
         "color": "#aaaaaa",
-        "latex": "w_{eightedXMean}\\left(x,w\\right)=\\frac{\\operatorname{total}\\left(xw\\right)}{\\operatorname{total}\\left(w\\right)}"
+        "latex": "w_{eightedXMean}=\\frac{\\operatorname{total}\\left(x_{0}w_{eights}\\right)}{\\operatorname{total}\\left(w_{eights}\\right)}"
       },
       {
         "type": "expression",
-        "id": "171",
-        "folderId": "103",
+        "id": "w_{eightedYMean}",
+        "folderId": "R^2 calculation Folder",
         "color": "#2d70b3",
-        "latex": "w_{eightedYMean}\\left(y,w\\right)=\\frac{\\operatorname{total}\\left(yw\\right)}{\\operatorname{total}\\left(w\\right)}"
+        "latex": "w_{eightedYMean}=\\frac{\\operatorname{total}\\left(y_{0}w_{eights}\\right)}{\\operatorname{total}\\left(w_{eights}\\right)}"
       },
       {
         "type": "expression",
-        "id": "172",
-        "folderId": "103",
+        "id": "R_{squared}",
+        "folderId": "R^2 calculation Folder",
         "color": "#388c46",
-        "latex": "R_{squared}\\left(x,y,t,w\\right)=1-\\frac{\\operatorname{total}\\left(w\\left|p_{os}\\left(t\\right)-\\left(x,y,p_{os}\\left(t\\right).z\\right)\\right|^{2}\\right)}{\\operatorname{total}\\left(w\\left|\\left(w_{eightedXMean}\\left(x,w\\right),w_{eightedYMean}\\left(y,w\\right)\\right)-\\left(x,y\\right)\\right|^{2}\\right)}"
+        "latex": "R_{squared}=1-\\frac{\\operatorname{total}\\left(w_{eights}\\left|p_{os}\\left(t_{0}\\right)-\\left(x_{0},y_{0},p_{os}\\left(t_{0}\\right).z\\right)\\right|^{2}\\right)}{\\operatorname{total}\\left(w_{eights}\\left|\\left(w_{eightedXMean},w_{eightedYMean}\\right)-\\left(x_{0},y_{0}\\right)\\right|^{2}\\right)}"
       },
       {
         "type": "folder",
-        "id": "81",
-        "title": "Data"
+        "id": "Data Folder",
+        "title": "Data",
+        "collapsed": true
       },
       {
         "type": "expression",
-        "id": "145",
-        "folderId": "81",
-        "color": "#6042a6",
-        "latex": "u_{pdate}\\left(i\\right)=\\left\\{e_{nableDataFixing}=1:\\left\\{h_{ighlight}=1:h_{ighlightPoint}\\left(i\\right),r_{emove}=1:r_{emovePoint}\\left(i\\right),f_{lipX}+f_{lipY}=2:f_{lipXYPoint}\\left(i\\right),f_{lipX}=1:f_{lipXPoint}\\left(i\\right),f_{lipY}=1:f_{lipYPoint}\\left(i\\right)\\right\\}\\right\\}"
-      },
-      {
-        "type": "expression",
-        "id": "183",
-        "folderId": "81",
-        "color": "#2d70b3",
-        "latex": "h_{ighlightPoint}\\left(i\\right)=h_{ighlightedPoints}\\to\\left\\{i_{sHighlighted}\\left(i\\right)=1:h_{ighlightRemoved}\\left(i\\right),\\operatorname{join}\\left(h_{ighlightedPoints},i\\right)\\right\\}"
-      },
-      {
-        "type": "expression",
-        "id": "189",
-        "folderId": "81",
-        "color": "#6042a6",
-        "latex": "r_{emovePoint}\\left(i\\right)=\\left(t_{0}\\to r_{emovedFromList}\\left(i,t_{0}\\right),x_{0}\\to r_{emovedFromList}\\left(i,x_{0}\\right),y_{0}\\to r_{emovedFromList}\\left(i,y_{0}\\right),w_{eights}\\to r_{emovedFromList}\\left(i,w_{eights}\\right),m_{ethods}\\to r_{emovedFromList}\\left(i,m_{ethods}\\right),h_{ighlightedPoints}\\to\\left\\{h_{ighlightRemoved}\\left(i\\right)>i:h_{ighlightRemoved}\\left(i\\right)-1,h_{ighlightRemoved}\\left(i\\right)\\right\\},R_{squaredVal}\\to R_{squared}\\left(r_{emovedFromList}\\left(i,x_{0}\\right),r_{emovedFromList}\\left(i,y_{0}\\right),r_{emovedFromList}\\left(i,t_{0}\\right),r_{emovedFromList}\\left(i,w_{eights}\\right)\\right)\\right)"
-      },
-      {
-        "type": "expression",
-        "id": "190",
-        "folderId": "81",
-        "color": "#aaaaaa",
-        "latex": "f_{lipXPoint}\\left(i\\right)=\\left(x_{0}\\to f_{lippedPoint}\\left(i,x_{0}\\right),R_{squaredVal}\\to R_{squared}\\left(f_{lippedPoint}\\left(i,x_{0}\\right),y_{0},t_{0},w_{eights}\\right)\\right)"
-      },
-      {
-        "type": "expression",
-        "id": "191",
-        "folderId": "81",
+        "id": "r_{emovedFromList}(i,L)",
+        "folderId": "Data Folder",
         "color": "#c74440",
-        "latex": "f_{lipYPoint}\\left(i\\right)=\\left(y_{0}\\to f_{lippedPoint}\\left(i,y_{0}\\right),R_{squaredVal}\\to R_{squared}\\left(x_{0},f_{lippedPoint}\\left(i,y_{0}\\right),t_{0},w_{eights}\\right)\\right)"
-      },
-      {
-        "type": "expression",
-        "id": "192",
-        "folderId": "81",
-        "color": "#2d70b3",
-        "latex": "f_{lipXYPoint}\\left(i\\right)=\\left(x_{0}\\to f_{lippedPoint}\\left(i,x_{0}\\right),y_{0}\\to f_{lippedPoint}\\left(i,y_{0}\\right),R_{squaredVal}\\to R_{squared}\\left(f_{lippedPoint}\\left(i,x_{0}\\right),f_{lippedPoint}\\left(i,y_{0}\\right),t_{0},w_{eights}\\right)\\right)"
-      },
-      {
-        "type": "expression",
-        "id": "187",
-        "folderId": "81",
-        "color": "#2d70b3",
         "latex": "r_{emovedFromList}\\left(i,L\\right)=\\left\\{i=1:L\\left[2...\\right],i=L.\\operatorname{count}:L\\left[1...L.\\operatorname{count}-1\\right],\\operatorname{join}\\left(L\\left[1...i-1\\right],L\\left[i+1...\\right]\\right)\\right\\}"
       },
       {
         "type": "expression",
-        "id": "188",
-        "folderId": "81",
-        "color": "#388c46",
+        "id": "f_{lippedPoint}(i,L)",
+        "folderId": "Data Folder",
+        "color": "#2d70b3",
         "latex": "f_{lippedPoint}\\left(i,L\\right)=\\left\\{i=1:\\operatorname{join}\\left(-L\\left[1\\right],L\\left[2...\\right]\\right),i=L.\\operatorname{count}:\\operatorname{join}\\left(x_{0}\\left[1...L.\\operatorname{count}-1\\right],-L\\left[i\\right]\\right),\\operatorname{join}\\left(L\\left[1...i-1\\right],-L\\left[i\\right],L\\left[i+1...\\right]\\right)\\right\\}"
       },
       {
         "type": "expression",
-        "id": "185",
-        "folderId": "81",
+        "id": "u_{pdate}(i)",
+        "folderId": "Data Folder",
         "color": "#6042a6",
-        "latex": "h_{ighlightRemoved}\\left(i\\right)=h_{ighlightedPoints}\\left[\\left\\{h_{ighlightedPoints}=i:1,0\\right\\}=0\\right]"
+        "latex": "u_{pdate}\\left(i\\right)=\\left\\{h_{ighlight}=1:h_{ighlightPoint}\\left(i\\right),r_{emove}=1:r_{emovePoint}\\left(i\\right),\\left(\\left\\{f_{lipX}=1:x_{0}\\to f_{lippedPoint}\\left(i,x_{0}\\right)\\right\\},\\left\\{f_{lipY}=1:y_{0}\\to f_{lippedPoint}\\left(i,y_{0}\\right)\\right\\}\\right)\\right\\}"
       },
       {
         "type": "expression",
-        "id": "193",
-        "folderId": "81",
+        "id": "r_{emovePoint}(i)",
+        "folderId": "Data Folder",
+        "color": "#388c46",
+        "latex": "r_{emovePoint}\\left(i\\right)=\\left(t_{0}\\to r_{emovedFromList}\\left(i,t_{0}\\right),x_{0}\\to r_{emovedFromList}\\left(i,x_{0}\\right),y_{0}\\to r_{emovedFromList}\\left(i,y_{0}\\right),w_{eights}\\to r_{emovedFromList}\\left(i,w_{eights}\\right),m_{ethods}\\to r_{emovedFromList}\\left(i,m_{ethods}\\right),h_{ighlightedPoints}\\to\\left\\{h_{ighlightRemoved}\\left(i\\right)>i:h_{ighlightRemoved}\\left(i\\right)-1,h_{ighlightRemoved}\\left(i\\right)\\right\\}\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "i_{sHighlighted}(i)",
+        "folderId": "Data Folder",
         "color": "#388c46",
         "latex": "i_{sHighlighted}\\left(i\\right)=h_{ighlightedPoints}\\left[h_{ighlightedPoints}=i\\right].\\operatorname{count}"
       },
       {
         "type": "expression",
-        "id": "123",
-        "folderId": "81",
+        "id": "h_{ighlightRemoved}(i)",
+        "folderId": "Data Folder",
+        "color": "#6042a6",
+        "latex": "h_{ighlightRemoved}\\left(i\\right)=h_{ighlightedPoints}\\left[\\left\\{h_{ighlightedPoints}=i:1,0\\right\\}=0\\right]"
+      },
+      {
+        "type": "expression",
+        "id": "h_{ighlightPoint}(i)",
+        "folderId": "Data Folder",
+        "color": "#2d70b3",
+        "latex": "h_{ighlightPoint}\\left(i\\right)=h_{ighlightedPoints}\\to\\left\\{i_{sHighlighted}\\left(i\\right)=1:h_{ighlightRemoved}\\left(i\\right),\\operatorname{join}\\left(h_{ighlightedPoints},i\\right)\\right\\}"
+      },
+      {
+        "type": "expression",
+        "id": "t_{0}",
+        "folderId": "Data Folder",
         "color": "#2d70b3",
         "latex": "t_{0}=\\left[\\right]"
       },
       {
         "type": "expression",
-        "id": "124",
-        "folderId": "81",
+        "id": "x_{0}",
+        "folderId": "Data Folder",
         "color": "#388c46",
         "latex": "x_{0}=\\left[\\right]"
       },
       {
         "type": "expression",
-        "id": "125",
-        "folderId": "81",
+        "id": "y_{0}",
+        "folderId": "Data Folder",
         "color": "#6042a6",
         "latex": "y_{0}=\\left[\\right]"
       },
       {
         "type": "expression",
-        "id": "151",
-        "folderId": "81",
+        "id": "w_{eights}",
+        "folderId": "Data Folder",
         "color": "#aaaaaa",
         "latex": "w_{eights}=\\left[\\right]"
       },
       {
         "type": "text",
-        "id": "156",
-        "folderId": "81",
-        "text": "For observation types\n0 => Historical\n1 => Camera\n2 => Speckle"
+        "id": "Observation Types Note",
+        "folderId": "Data Folder",
+        "text": "For observation types\n0 => Visual\n1 => Camera\n2 => Speckle"
       },
       {
         "type": "expression",
-        "id": "152",
-        "folderId": "81",
+        "id": "m_{ethods}",
+        "folderId": "Data Folder",
         "color": "#c74440",
         "latex": "m_{ethods}=\\left[\\right]"
       },
       {
         "type": "folder",
-        "id": "174",
+        "id": "Credits Folder",
         "title": "Credits and helper code",
         "collapsed": true
       },
       {
         "type": "text",
-        "id": "97",
-        "folderId": "174",
+        "id": "Hagan Note",
+        "folderId": "Credits Folder",
         "text": "This graph was based on Hagan Hensley's orbital solution desmos graph. \nhttps://www.desmos.com/calculator/li21labdx3"
-      },
-      {
-        "type": "text",
-        "id": "99",
-        "folderId": "174",
-        "text": "To view companion code to optimize orbits using this tool, visit my github\nhttps://github.com/ryan-tock/binary-orbits"
       }
     ]
   },

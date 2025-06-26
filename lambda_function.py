@@ -58,18 +58,6 @@ def calc_loss(parameters, data):
 
     return error
 
-def r_squared(parameters, data):
-    pred_pos = calc_positions(data, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5], parameters[6])
-
-    weighted_x_mean = sum([point['x'] * point['weight'] for point in data]) / sum([point['weight'] for point in data])
-    weighted_y_mean = sum([point['y'] * point['weight'] for point in data]) / sum([point['weight'] for point in data])
-
-    numerator = sum([data[i]['weight'] * ((data[i]['x'] - pred_pos[i][0]) ** 2 + (data[i]['y'] - pred_pos[i][1]) ** 2) for i in range(len(data))])
-    denominator = sum([data[i]['weight'] * ((data[i]['x'] - weighted_x_mean) ** 2 + (data[i]['y'] - weighted_y_mean) ** 2) for i in range(len(data))])
-
-    return 1 - numerator / denominator
-
-
 def lambda_handler(event, context):
     body = json.loads(event['body'])
     data = body['data']
@@ -79,12 +67,7 @@ def lambda_handler(event, context):
     parameters = result.x.tolist()
     _ = calc_loss(parameters, data) # to get the semi major axis from least squares regression
 
-    response = {
-        'parameters': parameters,
-        'r_squared': r_squared(parameters, data)
-    }
-
     return {
         'statusCode': 200,
-        'body': json.dumps(response)
+        'body': json.dumps(parameters)
     }
