@@ -1,4 +1,5 @@
-import { setOrbit, setVariable, readData } from "./desmos.js";
+import { setData, setVariable, readData } from "./desmos.js";
+import { API_ENDPOINT_URL } from "./config.js"
 
 let data;
 let sampleData;
@@ -12,58 +13,58 @@ const optimizeButton = document.getElementById("optimize");
 const periodLowInput = document.getElementById("period-low");
 const periodHighInput = document.getElementById("period-high");
 
-const semiMajor = document.getElementById("semi-major");
-const eccentricity = document.getElementById("eccentricity");
-const inclination = document.getElementById("inclination");
-const node = document.getElementById("node");
-const periapsis = document.getElementById("periapsis");
-const meanAnomaly = document.getElementById("mean-anomaly");
-const period = document.getElementById("period");
-
-const retainPoint = document.getElementById("retain-point");
-const removePoint = document.getElementById("remove-point");
-const highlightPoint = document.getElementById("highlight-point");
-const flipX = document.getElementById("flip-x");
-const flipY = document.getElementById("flip-y");
-const flipXY = document.getElementById("flip-xy");
-
 const downloadButton = document.getElementById("download");
 
-var periodLow = 2;
-var periodHigh = 40;
+var periodLow = parseFloat(periodLowInput.value);
+var periodHigh = parseFloat(periodHighInput.value);
 
-optimizeButton.addEventListener('click', (_) => {
-    console.log("beginning fit");
+const parameterMap = {
+    'semi-major':   { variable: 'a',       index: 0, scale: 1             },
+    'eccentricity': { variable: 'e_{0}',   index: 1, scale: 1             },
+    'inclination':  { variable: 'i',       index: 2, scale: 180 / Math.PI },
+    'node':         { variable: '\\Omega', index: 3, scale: 180 / Math.PI },
+    'periapsis':    { variable: '\\omega', index: 4, scale: 180 / Math.PI },
+    'mean-anomaly': { variable: 'M_{0}',   index: 5, scale: 180 / Math.PI },
+    'period':       { variable: 'p',       index: 6, scale: 1             }
+};
+
+function setOrbit(parameters) {
+    for (let parameter in parameterMap) {
+        let variable = parameterMap[parameter].variable;
+        let index = parameterMap[parameter].index
+        setVariable(variable, parameters[index]);
+    }
+
+    document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
+        let index = parameterMap[parameter.id].index;
+        let scale = parameterMap[parameter.id].scale;
+        parameter.value = "" + parameters[index] * scale;
+    });
+}
+
+optimizeButton.addEventListener('click', async (_) => {
+    console.log("beginning orbital fit");
     optimizeButton.disabled = true;
     data[activeOrbit]['data'] = readData();
     activeData = data[activeOrbit]['data'];
-    fetch('https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process', {
+    const response = await fetch(API_ENDPOINT_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: "{\"data\": " + JSON.stringify(activeData) + ", \"periodBound\": [" + periodLow + ", " + periodHigh + "]}"
-    })
-    .then(response => response.json())
-    .then(parameters => {
-        setOrbit(activeData, parameters);
-        setVariable("s_{howErrorLines}", 1);
-
-        semiMajor.value = "" + parameters[0]
-        eccentricity.value = "" + parameters[1]
-        inclination.value = "" + (parameters[2] * 180 / Math.PI)
-        node.value = "" + (parameters[3] * 180 / Math.PI)
-        periapsis.value = "" + (parameters[4] * 180 / Math.PI)
-        meanAnomaly.value = "" + (parameters[5] * 180 / Math.PI)
-        period.value = "" + parameters[6]
-
-        console.log("fitted!");
-        optimizeButton.disabled = false;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        optimizeButton.disabled = false;
     });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error with status: ${response.status}`);
+    }
+
+    const parameters = await response.json();
+    setVariable("s_{howErrorLines}", 1);
+    setOrbit(parameters);
+
+    console.log("fitted!");
+    optimizeButton.disabled = false;
 });
 
 fileInput.addEventListener('change', (event) => {
@@ -120,7 +121,8 @@ keyDropdown.addEventListener('change', (event) => {
 
     if (activeOrbit && data[activeOrbit]) {
         activeData = data[activeOrbit]['data'];
-        setOrbit(activeData, [0, 0, 0, 0, 0, 0, 1], 0);
+        setOrbit([0, 0, 0, 0, 0, 0, 1]);
+        setData(activeData);
         setVariable("s_{howErrorLines}", 0);
         setVariable("h_{ighlightedPoints}", "\\left[\\right]");
         optimizeButton.disabled = false;
@@ -143,58 +145,26 @@ periodHighInput.addEventListener('change', (event) => {
     periodHighInput.value = "" + periodHigh;
 });
 
-retainPoint.addEventListener('change', (event) => {
-    if (retainPoint.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
-});
+const pointManipulationModes = {
+    'retain-point':    { remove: 0, highlight: 0, flipX: 0, flipY: 0 },
+    'remove-point':    { remove: 1, highlight: 0, flipX: 0, flipY: 0 },
+    'highlight-point': { remove: 0, highlight: 1, flipX: 0, flipY: 0 },
+    'flip-x':          { remove: 0, highlight: 0, flipX: 1, flipY: 0 },
+    'flip-y':          { remove: 0, highlight: 0, flipX: 0, flipY: 1 },
+    'flip-xy':         { remove: 0, highlight: 0, flipX: 1, flipY: 1 },
+};
 
-removePoint.addEventListener('change', (event) => {
-    if (removePoint.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 1);
-        setVariable("h_{ighlight}", 0);
-    }
-});
-
-highlightPoint.addEventListener('change', (event) => {
-    if (highlightPoint.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 1);
-    }
-});
-
-flipX.addEventListener('change', (event) => {
-    if (flipX.checked) {
-        setVariable("f_{lipX}", 1);
-        setVariable("f_{lipY}", 0);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
-});
-
-flipY.addEventListener('change', (event) => {
-    if (flipY.checked) {
-        setVariable("f_{lipX}", 0);
-        setVariable("f_{lipY}", 1);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
-});
-
-flipXY.addEventListener('change', (event) => {
-    if (flipXY.checked) {
-        setVariable("f_{lipX}", 1);
-        setVariable("f_{lipY}", 1);
-        setVariable("r_{emove}", 0);
-        setVariable("h_{ighlight}", 0);
-    }
+document.querySelectorAll('input[name="point-manip"]').forEach(radio => {
+    radio.addEventListener('change', (event) => {
+        const mode = event.target.id;
+        if (event.target.checked) {
+            const settings = pointManipulationModes[mode];
+            setVariable("r_{emove}", settings.remove);
+            setVariable("h_{ighlight}", settings.highlight);
+            setVariable("f_{lipX}", settings.flipX);
+            setVariable("f_{lipY}", settings.flipY);
+        }
+    });
 });
 
 downloadButton.addEventListener('click', (event) => {
@@ -213,6 +183,15 @@ downloadButton.addEventListener('click', (event) => {
     a.click();
 
     document.body.removeChild(a);
+});
+
+document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
+    parameter.addEventListener('change', (event) => {
+        var variable = parameterMap[parameter.id].variable;
+        var scale = parameterMap[parameter.id].scale;
+        var value = parseFloat(parameter.value / scale);
+        setVariable(variable, value);
+    });
 });
 
 window.addEventListener("load", async () => {

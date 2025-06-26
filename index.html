@@ -5,25 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Binary Orbits</title>
-    <script>
-        const configSource = document.createElement("script");
-        configSource.src = 'config.js';
-
-        configSource.onload = () => {
+    <script type="module">
+        try {
+            const config = await import("./config.js");
             const desmosScript = document.createElement('script');
-            desmosScript.src = `https://www.desmos.com/api/v1.11/calculator.js?apiKey=${DESMOS_API_KEY}`;
+            desmosScript.src = `https://www.desmos.com/api/v1.11/calculator.js?apiKey=${config.DESMOS_API_KEY}`;
             document.head.appendChild(desmosScript);
+        } catch (error) {
+            console.log(error);
+            alert("No config.js found! See README for details");
         }
-
-        configSource.onerror = () => {
-            console.log("No desmos API key found!");
-            console.log("If you'd like to use Desmos in your own project, or in a fork of this project, please reach out to partnerships@desmos.com to request your own API key.");
-            console.log("During development, you may use the Desmos developer key. To do so, create a file called config.js with the following contents:");
-            console.log("const DESMOS_API_KEY = \"dcb31709b452b1cf9dc26972add0fda6\";");
-            alert("No desmos API key found! See console for details");
-        }
-
-        document.head.appendChild(configSource);
     </script>
     <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -48,9 +39,9 @@
     <input type="radio" id="retain-point" name="point-manip" checked><label for="retain-point">Do Nothing</label>
     <input type="radio" id="remove-point" name="point-manip"><label for="remove-point">Remove Point</label>
     <input type="radio" id="highlight-point" name="point-manip"><label for="highlight-point">Highlight Point</label>
-    <input type="radio" id="flip-x" name="point-manip"><label for="flip-x">Flip X</label>
-    <input type="radio" id="flip-y" name="point-manip"><label for="flip-y">Flip Y</label>
-    <input type="radio" id="flip-xy" name="point-manip"><label for="flip-xy">Flip X and Y</label>
+    <input type="radio" id="flip-x" name="point-manip"><label for="flip-x">Negate RA</label>
+    <input type="radio" id="flip-y" name="point-manip"><label for="flip-y">Negate Dec</label>
+    <input type="radio" id="flip-xy" name="point-manip"><label for="flip-xy">Negate RA and Dec</label>
 
     <div class="aspect-ratio-container">
         <div class="calculator" id="calculator"></div>
@@ -64,12 +55,12 @@
 
     <h3>Orbital Parameters</h3>
     
-    Semi Major Axis: <input type="text" id="semi-major", value="0"> arcseconds<br>
-    Eccentricity: <input type="text" id="eccentricity", value="0"><br>
-    Inclination: <input type="text" id="inclination", value="0"> degrees<br>
-    Longitude of the Ascending Node: <input type="text" id="node", value="0"> degrees<br>
-    Argument of Periapsis: <input type="text" id="periapsis", value="0"> degrees<br>
-    Mean Anomaly at Epoch: <input type="text" id="mean-anomaly", value="0"> degrees<br>
-    Period: <input type="text" id="period", value="0"> years<br>
+    Semi Major Axis:                 <input type="text" class="parameter" id="semi-major"   value="0"> arcseconds <br>
+    Eccentricity:                    <input type="text" class="parameter" id="eccentricity" value="0">            <br>
+    Inclination:                     <input type="text" class="parameter" id="inclination"  value="0"> degrees    <br>
+    Longitude of the Ascending Node: <input type="text" class="parameter" id="node"         value="0"> degrees    <br>
+    Argument of Periapsis:           <input type="text" class="parameter" id="periapsis"    value="0"> degrees    <br>
+    Mean Anomaly at Epoch:           <input type="text" class="parameter" id="mean-anomaly" value="0"> degrees    <br>
+    Period:                          <input type="text" class="parameter" id="period"       value="0"> years      <br>
 </body>
 </html>
