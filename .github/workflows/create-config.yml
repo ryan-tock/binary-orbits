@@ -18,7 +18,8 @@ jobs:
 
       - name: Create config.js from secret
         run: |
-          echo "export const DESMOS_API_KEY = \"${{ secrets.DESMOS_API_KEY }}\";\nexport const API_ENDPOINT_URL = \"https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process\";" > config.js
+          echo "export const DESMOS_API_KEY = \"${{ secrets.DESMOS_API_KEY }}\";" >> config.js
+          echo "export const API_ENDPOINT_URL = \"https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process\";" >> config.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
