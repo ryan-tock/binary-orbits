@@ -5,7 +5,7 @@ window.onload = async () => {
     if (typeof Desmos == 'undefined') {
         return;
     }
-    
+
     var elt = document.getElementById('calculator');
     calculator = Desmos.Calculator3D(elt);
     calculator.updateSettings({"expressions": false});
@@ -56,15 +56,7 @@ export function readData() {
     return data;
 }
 
-export function setOrbit(data, parameters) {
-    setVariable("a", parameters[0]);
-    setVariable("e_{0}", parameters[1]);
-    setVariable("i", parameters[2]);
-    setVariable("\\Omega", parameters[3]);
-    setVariable("\\omega", parameters[4]);
-    setVariable("M_{0}", parameters[5]);
-    setVariable("p", parameters[6]);
-
+export function setData(data) {
     let t = [];
     let x = [];
     let y = [];
@@ -79,9 +71,9 @@ export function setOrbit(data, parameters) {
         methods.push(point['method']);
     }
 
-    setVariable("t_{0}", "\\left[" + t.join(", ") + "\\right]");
-    setVariable("x_{0}", "\\left[" + x.join(", ") + "\\right]");
-    setVariable("y_{0}", "\\left[" + y.join(", ") + "\\right]");
+    setVariable("t_{0}",      "\\left[" +       t.join(", ") + "\\right]");
+    setVariable("x_{0}",      "\\left[" +       x.join(", ") + "\\right]");
+    setVariable("y_{0}",      "\\left[" +       y.join(", ") + "\\right]");
     setVariable("w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
     setVariable("m_{ethods}", "\\left[" + methods.join(", ") + "\\right]");
 }
