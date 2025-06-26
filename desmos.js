@@ -1,6 +1,5 @@
-let state;
 let calculator;
-let r_squared_elem = document.getElementById("r_squared")
+let rSquaredElem = document.getElementById("r_squared");
 
 window.onload = async () => {
     if (typeof Desmos !== 'undefined') {
@@ -9,53 +8,39 @@ window.onload = async () => {
         calculator.updateSettings({"expressions": false});
         const timestamp = new Date().getTime(); // can remove after development
         const response_state = await fetch(`./state.json?cache_bust=${timestamp}`);
-        state = await response_state.json();
+        var state = await response_state.json();
         calculator.setState(state);
     }
 
-    calculator.observeEvent('change', function() {
-        var r_squared = readVariable("R_{squaredVal}");
-        r_squared_elem.innerText = "" + r_squared;
+    var rSquared = calculator.HelperExpression({latex: 'R_{squared}'});
+    rSquared.observe('numericValue', function() {
+        console.log("observed change: " + rSquared.numericValue);
+        rSquaredElem.innerText = "" + rSquared.numericValue;
     });
 }
 
-
-function readVariable(variable) {
-    state = calculator.getState();
-    let expressions = state['expressions']['list']
+function readVariable(variable, expressions) {
     for (const i in expressions) {
-        if (Object.hasOwn(expressions[i], 'latex')) {
-            if (expressions[i]['latex'].startsWith(variable + "=")) {
-                return expressions[i]['latex'].split("=")[1];
-            }
+        if (expressions[i].id == variable) {
+            return expressions[i].latex.split("=")[1];
         }
     }
 }
 
 export function setVariable(variable, value) {
-    state = calculator.getState();
-    let expressions = state['expressions']['list']
-    for (const i in expressions) {
-        if (Object.hasOwn(expressions[i], 'latex')) {
-            if (expressions[i]['latex'].startsWith(variable + "=")) {
-                expressions[i]['latex'] = expressions[i]['latex'].split("=")[0] + "=" + value.toString();
-            }
-        }
-    }
-
-    calculator.setState(state);
+    calculator.setExpression({ id: variable, latex: variable + "=" + value });
 }
 
 export function readData() {
-    state = calculator.getState();
+    var expressions = calculator.getExpressions();
 
     var data = [];
 
-    let t = JSON.parse(readVariable('t_{0}').split("\\left")[1].split("\\right")[0] + "]");
-    let x = JSON.parse(readVariable('x_{0}').split("\\left")[1].split("\\right")[0] + "]");
-    let y = JSON.parse(readVariable('y_{0}').split("\\left")[1].split("\\right")[0] + "]");
-    let weights = JSON.parse(readVariable('w_{eights}').split("\\left")[1].split("\\right")[0] + "]");
-    let methods = JSON.parse(readVariable('m_{ethods}').split("\\left")[1].split("\\right")[0] + "]");
+    let t = JSON.parse(readVariable('t_{0}', expressions).split("\\left")[1].split("\\right")[0] + "]");
+    let x = JSON.parse(readVariable('x_{0}', expressions).split("\\left")[1].split("\\right")[0] + "]");
+    let y = JSON.parse(readVariable('y_{0}', expressions).split("\\left")[1].split("\\right")[0] + "]");
+    let weights = JSON.parse(readVariable('w_{eights}', expressions).split("\\left")[1].split("\\right")[0] + "]");
+    let methods = JSON.parse(readVariable('m_{ethods}', expressions).split("\\left")[1].split("\\right")[0] + "]");
 
     for (const i in t) {
         data.push({
@@ -70,7 +55,7 @@ export function readData() {
     return data;
 }
 
-export function setOrbit(data, parameters, r_squared) {
+export function setOrbit(data, parameters) {
     setVariable("a", parameters[0]);
     setVariable("e_{0}", parameters[1]);
     setVariable("i", parameters[2]);
@@ -98,7 +83,4 @@ export function setOrbit(data, parameters, r_squared) {
     setVariable("y_{0}", "\\left[" + y.join(", ") + "\\right]");
     setVariable("w_{eights}", "\\left[" + weights.join(", ") + "\\right]");
     setVariable("m_{ethods}", "\\left[" + methods.join(", ") + "\\right]");
-
-    setVariable("R_{squaredVal}", r_squared);
-    r_squared_elem.innerText = "" + r_squared;
 }

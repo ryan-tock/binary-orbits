@@ -45,19 +45,17 @@ optimizeButton.addEventListener('click', (_) => {
         body: "{\"data\": " + JSON.stringify(activeData) + ", \"periodBound\": [" + periodLow + ", " + periodHigh + "]}"
     })
     .then(response => response.json())
-    .then(result => {
-        var parameters = result['parameters'];
-        var r_squared = result['r_squared'];
-        setOrbit(activeData, parameters, r_squared);
+    .then(parameters => {
+        setOrbit(activeData, parameters);
         setVariable("s_{howErrorLines}", 1);
 
-        semiMajor.innerText = "" + parameters[0]
-        eccentricity.innerText = "" + parameters[1]
-        inclination.innerText = "" + (parameters[2] * 180 / Math.PI)
-        node.innerText = "" + (parameters[3] * 180 / Math.PI)
-        periapsis.innerText = "" + (parameters[4] * 180 / Math.PI)
-        meanAnomaly.innerText = "" + (parameters[5] * 180 / Math.PI)
-        period.innerText = "" + parameters[6]
+        semiMajor.value = "" + parameters[0]
+        eccentricity.value = "" + parameters[1]
+        inclination.value = "" + (parameters[2] * 180 / Math.PI)
+        node.value = "" + (parameters[3] * 180 / Math.PI)
+        periapsis.value = "" + (parameters[4] * 180 / Math.PI)
+        meanAnomaly.value = "" + (parameters[5] * 180 / Math.PI)
+        period.value = "" + parameters[6]
 
         console.log("fitted!");
         optimizeButton.disabled = false;
@@ -147,7 +145,6 @@ periodHighInput.addEventListener('change', (event) => {
 
 retainPoint.addEventListener('change', (event) => {
     if (retainPoint.checked) {
-        setVariable("e_{nableDataFixing}", 0);
         setVariable("f_{lipX}", 0);
         setVariable("f_{lipY}", 0);
         setVariable("r_{emove}", 0);
@@ -157,7 +154,6 @@ retainPoint.addEventListener('change', (event) => {
 
 removePoint.addEventListener('change', (event) => {
     if (removePoint.checked) {
-        setVariable("e_{nableDataFixing}", 1);
         setVariable("f_{lipX}", 0);
         setVariable("f_{lipY}", 0);
         setVariable("r_{emove}", 1);
@@ -167,7 +163,6 @@ removePoint.addEventListener('change', (event) => {
 
 highlightPoint.addEventListener('change', (event) => {
     if (highlightPoint.checked) {
-        setVariable("e_{nableDataFixing}", 1);
         setVariable("f_{lipX}", 0);
         setVariable("f_{lipY}", 0);
         setVariable("r_{emove}", 0);
@@ -177,7 +172,6 @@ highlightPoint.addEventListener('change', (event) => {
 
 flipX.addEventListener('change', (event) => {
     if (flipX.checked) {
-        setVariable("e_{nableDataFixing}", 1);
         setVariable("f_{lipX}", 1);
         setVariable("f_{lipY}", 0);
         setVariable("r_{emove}", 0);
@@ -187,7 +181,6 @@ flipX.addEventListener('change', (event) => {
 
 flipY.addEventListener('change', (event) => {
     if (flipY.checked) {
-        setVariable("e_{nableDataFixing}", 1);
         setVariable("f_{lipX}", 0);
         setVariable("f_{lipY}", 1);
         setVariable("r_{emove}", 0);
@@ -197,7 +190,6 @@ flipY.addEventListener('change', (event) => {
 
 flipXY.addEventListener('change', (event) => {
     if (flipXY.checked) {
-        setVariable("e_{nableDataFixing}", 1);
         setVariable("f_{lipX}", 1);
         setVariable("f_{lipY}", 1);
         setVariable("r_{emove}", 0);
