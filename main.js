@@ -40,6 +40,8 @@ function setOrbit(parameters) {
         let scale = parameterMap[parameter.id].scale;
         parameter.value = "" + parameters[index] * scale;
     });
+
+    updatePassage();
 }
 
 optimizeButton.addEventListener('click', async (_) => {
@@ -168,7 +170,7 @@ document.querySelectorAll('input[name="point-manip"]').forEach(radio => {
 });
 
 downloadButton.addEventListener('click', (event) => {
-    readData();
+    data[activeOrbit]['data'] = readData();
 
     const jsonString = JSON.stringify(data, null, 4);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -193,6 +195,32 @@ document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
         setVariable(variable, value);
     });
 });
+
+var mean_anomaly = document.getElementById("mean-anomaly");
+var passage = document.getElementById("passage");
+var period = document.getElementById("period");
+
+mean_anomaly.addEventListener('change', (_) => {
+    updatePassage();
+});
+
+passage.addEventListener('change', (_) => {
+    var passage_val = parseFloat(passage.value);
+    var period_val = parseFloat(period.value);
+    var anomaly = 360.0 / period_val * (2000.0 - passage_val);
+
+    mean_anomaly.value = "" + anomaly;
+
+    setVariable("M_{0}", anomaly);
+});
+
+function updatePassage() {
+    var anomaly = parseFloat(mean_anomaly.value);
+    var period_val = parseFloat(period.value);
+    var passage_val = 2000.0 - period_val * anomaly / 360.0
+
+    passage.value = "" + passage_val;
+}
 
 window.addEventListener("load", async () => {
     const timestamp = new Date().getTime(); // can remove after development
