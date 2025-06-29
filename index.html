@@ -19,29 +19,40 @@
     <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body>  
     <h1>Binary Orbit 3D Visualizer</h1>
-    <label for="sample-data">Use sample data? </label>
-    <input type="checkbox" id="sample-data" checked>
-    <br>
-    <input type="file" id="file-input" accept=".json">
-    <select id="key-dropdown" disabled>
+     <section>
+      <label for="sample-data">
+        <input type="checkbox" id="sample-data" checked />
+        Use sample data
+      </label>
+      <br />
+      <label for="file-input">Load JSON File:</label>
+      <input type="file" id="file-input" accept=".json" />
+      <label for="key-dropdown">Select an Orbit:</label>
+      <select id="key-dropdown" disabled>
         <option value="">Select an Orbit</option>
-    </select>
-    <button id="optimize" disabled>Optimize Orbit!</button>
+      </select>
+      <button id="optimize" disabled>Optimize Orbit!</button>
+    </section>
 
-    <br><br>
-    Period Bound: 
-    <input type="text" id="period-low" value="2" style="width: 50px"> yr - <input type="text" id="period-high" value="40" style="width: 50px"> yr
-    <br><br>
-    On Click
-    <br>
-    <input type="radio" id="retain-point" name="point-manip" checked><label for="retain-point">Do Nothing</label>
-    <input type="radio" id="remove-point" name="point-manip"><label for="remove-point">Remove Point</label>
-    <input type="radio" id="highlight-point" name="point-manip"><label for="highlight-point">Highlight Point</label>
-    <input type="radio" id="flip-x" name="point-manip"><label for="flip-x">Negate RA</label>
-    <input type="radio" id="flip-y" name="point-manip"><label for="flip-y">Negate Dec</label>
-    <input type="radio" id="flip-xy" name="point-manip"><label for="flip-xy">Negate RA and Dec</label>
+    <section>
+      <label>Period Bound:</label>
+      <input type="text" id="period-low" value="2" size="4" aria-label="Lower period bound (years)" /> yr -
+      <input type="text" id="period-high" value="40" size="4" aria-label="Upper period bound (years)" /> yr
+    </section>
+
+    <section>
+      <fieldset>
+        <legend>On Click</legend>
+        <label><input type="radio" id="retain-point" name="point-manip" checked /> Do Nothing</label>
+        <label><input type="radio" id="remove-point" name="point-manip" /> Remove Point</label>
+        <label><input type="radio" id="highlight-point" name="point-manip" /> Highlight Point</label>
+        <label><input type="radio" id="flip-x" name="point-manip" /> Negate RA</label>
+        <label><input type="radio" id="flip-y" name="point-manip" /> Negate Dec</label>
+        <label><input type="radio" id="flip-xy" name="point-manip" /> Negate RA and Dec</label>
+      </fieldset>
+    </section>
 
     <div class="aspect-ratio-container">
         <div class="calculator" id="calculator"></div>
