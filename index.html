@@ -64,37 +64,35 @@
     <br>
     <button id="download">Download updated data file</button>
 
+    <h3>Orbital Parameters</h3>
+    <input type="checkbox" id="using-passage">Use Periapsis Passage (T) over Mean Anomaly at Epoch (M0) <br><br>
+    
+    <label for="semi-major" class="parameter-label">Semi Major Axis:</label>
+    <input type="text" class="parameter" id="semi-major" value="0"> arcseconds <br>
 
-    <section>
-      <h3>Orbital Parameters</h3>
-      <div>
-        <label for="semi-major">Semi Major Axis:</label>
-        <input type="text" class="parameter" id="semi-major" value="0" /> arcsec
-      </div>
-      <div>
-        <label for="eccentricity">Eccentricity:</label>
-        <input type="text" class="parameter" id="eccentricity" value="0" />
-      </div>
-      <div>
-        <label for="inclination">Inclination:</label>
-        <input type="text" class="parameter" id="inclination" value="0" /> deg
-      </div>
-      <div>
-        <label for="node">Longitude of Ascending Node:</label>
-        <input type="text" class="parameter" id="node" value="0" /> deg
-      </div>
-      <div>
-        <label for="periapsis">Argument of Periapsis:</label>
-        <input type="text" class="parameter" id="periapsis" value="0" /> deg
-      </div>Add commentMore actions
-      <div>
-        <label for="mean-anomaly">Mean Anomaly at Epoch:</label>
-        <input type="text" class="parameter" id="mean-anomaly" value="0" /> deg
-      </div>
-      <div>
-        <label for="period">Period:</label>
-        <input type="text" class="parameter" id="period" value="0" /> years
-      </div>
-    </section>
+    <label for="eccentricity" class="parameter-label">Eccentricity:</label>
+    <input type="text" class="parameter" id="eccentricity" value="0"> <br>
+
+    <label for="inclination" class="parameter-label">Inclination:</label>
+    <input type="text" class="parameter" id="inclination" value="0"> degrees <br>
+
+    <label for="node" class="parameter-label">Longitude of the Ascending Node:</label>
+    <input type="text" class="parameter" id="node" value="0"> degrees <br>
+
+    <label for="periapsis" class="parameter-label">Argument of Periapsis:</label>
+    <input type="text" class="parameter" id="periapsis" value="0"> degrees <br>
+
+    <div>
+      <label for="mean-anomaly" class="parameter-label">Mean Anomaly at Epoch:</label>
+      <input type="text" class="parameter" id="mean-anomaly" value="0"> degrees <br>
+    </div>
+    
+    <div hidden>
+      <label for="passage" class="parameter-label">Periapsis Passage:</label>
+      <input type="text" class="parameter" id="passage" value="0"> years <br>
+    </div>
+
+    <label for="period" class="parameter-label">Period:</label>
+    <input type="text" class="parameter" id="period" value="0"> years <br>
 </body>
 </html>

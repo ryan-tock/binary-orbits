@@ -36,15 +36,21 @@ function setOrbit(parameters) {
     }
 
     document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
+        if (parameter.id == "passage") {
+            return;
+        }
         let index = parameterMap[parameter.id].index;
         let scale = parameterMap[parameter.id].scale;
         parameter.value = "" + parameters[index] * scale;
     });
+
+    updatePassage();
 }
 
 optimizeButton.addEventListener('click', async (_) => {
     console.log("beginning orbital fit");
     optimizeButton.disabled = true;
+    optimizeButton.innerText = "Fitting..."
     data[activeOrbit]['data'] = readData();
     activeData = data[activeOrbit]['data'];
     const response = await fetch(API_ENDPOINT_URL, {
@@ -65,6 +71,7 @@ optimizeButton.addEventListener('click', async (_) => {
 
     console.log("fitted!");
     optimizeButton.disabled = false;
+    optimizeButton.innerText = "Optimize Orbit!"
 });
 
 fileInput.addEventListener('change', (event) => {
@@ -168,7 +175,7 @@ document.querySelectorAll('input[name="point-manip"]').forEach(radio => {
 });
 
 downloadButton.addEventListener('click', (event) => {
-    readData();
+    data[activeOrbit]['data'] = readData();
 
     const jsonString = JSON.stringify(data, null, 4);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -186,6 +193,9 @@ downloadButton.addEventListener('click', (event) => {
 });
 
 document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
+    if (parameter.id == "passage") {
+        return;
+    }
     parameter.addEventListener('change', (event) => {
         var variable = parameterMap[parameter.id].variable;
         var scale = parameterMap[parameter.id].scale;
@@ -193,6 +203,38 @@ document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
         setVariable(variable, value);
     });
 });
+
+var mean_anomaly = document.getElementById("mean-anomaly");
+var passage = document.getElementById("passage");
+var period = document.getElementById("period");
+var usingPassage = document.getElementById("using-passage");
+
+usingPassage.addEventListener('change', (_) => {
+    mean_anomaly.parentNode.hidden = usingPassage.checked;
+    passage.parentNode.hidden = !usingPassage.checked;
+});
+
+mean_anomaly.addEventListener('change', (_) => {
+    updatePassage();
+});
+
+passage.addEventListener('change', (_) => {
+    var passage_val = parseFloat(passage.value);
+    var period_val = parseFloat(period.value);
+    var anomaly = 360.0 / period_val * (2000.0 - passage_val);
+
+    mean_anomaly.value = "" + anomaly;
+
+    setVariable("M_{0}", anomaly);
+});
+
+function updatePassage() {
+    var anomaly = parseFloat(mean_anomaly.value);
+    var period_val = parseFloat(period.value);
+    var passage_val = 2000.0 - period_val * anomaly / 360.0
+
+    passage.value = "" + passage_val;
+}
 
 window.addEventListener("load", async () => {
     const timestamp = new Date().getTime(); // can remove after development
