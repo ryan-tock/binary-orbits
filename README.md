@@ -46,11 +46,11 @@ Welcome to the Binary Orbit 3D Visualizer! This graph is for plotting existing (
 
 * **Choose Appropriate Setting**
     * Do Nothing
-    * Remove Point       Removes points.
-    * Highlight point    Makes points black to distinguish them.
-    * Flip X             Negates the X coordinate of the point.
-    * Flip Y             Negates the Y coordinate of the point.
-    * Flip X and Y       Negates the X and Y coordinates of the point.
+    * Remove Point          Removes points.
+    * Highlight point       Makes points black to distinguish them.
+    * Negate RA             Negates the RA coordinate of the point.
+    * Negate Dec            Negates the Dec coordinate of the point.
+    * Negate RA and Dec     Negates the RA and Dec coordinates of the point.
 * **Click any point on the graph.**
     * When all data is adjusted. It is highly recommended that you re-fit the data using the "Optimize Orbit!" button.
 

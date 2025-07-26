@@ -36,6 +36,9 @@ function setOrbit(parameters) {
     }
 
     document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
+        if (parameter.id == "passage") {
+            return;
+        }
         let index = parameterMap[parameter.id].index;
         let scale = parameterMap[parameter.id].scale;
         parameter.value = "" + parameters[index] * scale;
@@ -47,6 +50,7 @@ function setOrbit(parameters) {
 optimizeButton.addEventListener('click', async (_) => {
     console.log("beginning orbital fit");
     optimizeButton.disabled = true;
+    optimizeButton.innerText = "Fitting..."
     data[activeOrbit]['data'] = readData();
     activeData = data[activeOrbit]['data'];
     const response = await fetch(API_ENDPOINT_URL, {
@@ -67,6 +71,7 @@ optimizeButton.addEventListener('click', async (_) => {
 
     console.log("fitted!");
     optimizeButton.disabled = false;
+    optimizeButton.innerText = "Optimize Orbit!"
 });
 
 fileInput.addEventListener('change', (event) => {
@@ -188,6 +193,9 @@ downloadButton.addEventListener('click', (event) => {
 });
 
 document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
+    if (parameter.id == "passage") {
+        return;
+    }
     parameter.addEventListener('change', (event) => {
         var variable = parameterMap[parameter.id].variable;
         var scale = parameterMap[parameter.id].scale;
@@ -199,6 +207,12 @@ document.querySelectorAll('input[class="parameter"]').forEach(parameter => {
 var mean_anomaly = document.getElementById("mean-anomaly");
 var passage = document.getElementById("passage");
 var period = document.getElementById("period");
+var usingPassage = document.getElementById("using-passage");
+
+usingPassage.addEventListener('change', (_) => {
+    mean_anomaly.parentNode.hidden = usingPassage.checked;
+    passage.parentNode.hidden = !usingPassage.checked;
+});
 
 mean_anomaly.addEventListener('change', (_) => {
     updatePassage();
