@@ -91,35 +91,76 @@ pub fn calc_positions(points: &[Point], params: &Params, out: &mut Vec<[f64; 2]>
     let beta = params.e / (1.0 + (1.0 - params.e * params.e).sqrt());
     let two_pi_over_p = 2.0 * std::f64::consts::PI / params.p;
 
-    for (_idx, point) in points.iter().enumerate() {
+    use wide::f64x2;
+    let m0_v = f64x2::splat(params.m0);
+    let tpop_v = f64x2::splat(two_pi_over_p);
+    let e_v = f64x2::splat(params.e);
+    let beta_v = f64x2::splat(beta);
+    let sm_v = f64x2::splat(params.sm);
+    let peri_v = f64x2::splat(params.periapsis);
+    let nc_v = f64x2::splat(node_cos);
+    let ns_v = f64x2::splat(node_sin);
+    let incl_v = f64x2::splat(inclined_angle);
+    let one = f64x2::splat(1.0);
+    let two = f64x2::splat(2.0);
+    let t_offset = f64x2::splat(2000.0);
+
+    let n = points.len();
+    let even = n & !1;
+
+    for i in (0..even).step_by(2) {
         #[cfg(feature = "trace-point")]
         let _pt_t = Instant::now();
 
-        let mean_anomaly = params.m0 + two_pi_over_p * (point.t - 2000.0);
+        let p0 = &points[i];
+        let p1 = &points[i + 1];
+        let t = f64x2::from([p0.t, p1.t]);
+        let mean_anomaly = m0_v + tpop_v * (t - t_offset);
 
         #[cfg(feature = "trace-hot")]
         let _newton_t = Instant::now();
+        let mut ecc = mean_anomaly;
+        for _ in 0..NEWTON_ITERATIONS {
+            let (sin_e, cos_e) = ecc.sin_cos();
+            ecc = ecc + (mean_anomaly - ecc + e_v * sin_e) / (one - e_v * cos_e);
+        }
+        trace_hot!("newton iterations took {:?}", _newton_t.elapsed());
+
+        let (sin_e, cos_e) = ecc.sin_cos();
+        let true_anomaly = ecc + two * (beta_v * sin_e / (one - beta_v * cos_e)).atan();
+        let r = sm_v * (one - e_v * cos_e);
+        let (sin_w, cos_w) = (true_anomaly + peri_v).sin_cos();
+
+        let px = r * (cos_w * nc_v - incl_v * sin_w * ns_v);
+        let py = r * (incl_v * sin_w * nc_v + cos_w * ns_v);
+
+        let px_a = px.to_array();
+        let py_a = py.to_array();
+        out.push([px_a[0], py_a[0]]);
+        out.push([px_a[1], py_a[1]]);
+
+        trace_point!("pair idx={} t=[{},{}] took {:?}", i, p0.t, p1.t, _pt_t.elapsed());
+    }
+
+    // Odd tail — fall back to scalar for the last point when n is odd.
+    for i in even..n {
+        let point = &points[i];
+        let mean_anomaly = params.m0 + two_pi_over_p * (point.t - 2000.0);
         let mut eccentric_anomaly = mean_anomaly;
         for _ in 0..NEWTON_ITERATIONS {
             let (sin_e, cos_e) = eccentric_anomaly.sin_cos();
             eccentric_anomaly += (mean_anomaly - eccentric_anomaly + params.e * sin_e)
                 / (1.0 - params.e * cos_e);
         }
-        trace_hot!("newton iterations took {:?}", _newton_t.elapsed());
-
         let (sin_e, cos_e) = eccentric_anomaly.sin_cos();
         let true_anomaly = eccentric_anomaly
             + 2.0 * (beta * sin_e / (1.0 - beta * cos_e)).atan();
-
         let r = params.sm * (1.0 - params.e * cos_e);
         let (sin_w, cos_w) = (true_anomaly + params.periapsis).sin_cos();
-
         out.push([
             r * (cos_w * node_cos - inclined_angle * sin_w * node_sin),
             r * (inclined_angle * sin_w * node_cos + cos_w * node_sin),
         ]);
-
-        trace_point!("point idx={} t={} took {:?}", _idx, point.t, _pt_t.elapsed());
     }
 
     trace_iter!("calc_positions n={} took {:?}", points.len(), _iter_t.elapsed());
@@ -141,11 +182,39 @@ pub fn calc_loss(points: &[Point], params: &Params, scratch: &mut Vec<[f64; 2]>)
 
     #[cfg(feature = "trace-hot")]
     let _ls_t = Instant::now();
-    let mut parameter_squared = 0.0;
-    let mut resultant = 0.0;
-    for (point, pred) in points.iter().zip(scratch.iter()) {
-        parameter_squared += (pred[0] * pred[0] + pred[1] * pred[1]) * point.weight;
-        resultant += (pred[0] * point.x + pred[1] * point.y) * point.weight;
+
+    // LS + error sums vectorized with f64x2. The non-trig math in this
+    // function wasn't vectorizable under the old AoS iterator pattern, so
+    // we unroll pairs of points and load into wide vectors explicitly.
+    // Odd tail runs scalar at the end.
+    use wide::f64x2;
+
+    let n = points.len();
+    let even = n & !1;
+    let mut ps_v = f64x2::ZERO;
+    let mut rs_v = f64x2::ZERO;
+    for i in (0..even).step_by(2) {
+        let p0 = &points[i];
+        let p1 = &points[i + 1];
+        let pr0 = scratch[i];
+        let pr1 = scratch[i + 1];
+        let px = f64x2::from([pr0[0], pr1[0]]);
+        let py = f64x2::from([pr0[1], pr1[1]]);
+        let x = f64x2::from([p0.x, p1.x]);
+        let y = f64x2::from([p0.y, p1.y]);
+        let w = f64x2::from([p0.weight, p1.weight]);
+        ps_v = (px * px + py * py).mul_add(w, ps_v);
+        rs_v = (px * x + py * y).mul_add(w, rs_v);
+    }
+    let ps_arr = ps_v.to_array();
+    let rs_arr = rs_v.to_array();
+    let mut parameter_squared = ps_arr[0] + ps_arr[1];
+    let mut resultant = rs_arr[0] + rs_arr[1];
+    for i in even..n {
+        let p = &points[i];
+        let pr = scratch[i];
+        parameter_squared += (pr[0] * pr[0] + pr[1] * pr[1]) * p.weight;
+        resultant += (pr[0] * p.x + pr[1] * p.y) * p.weight;
     }
 
     let sm = if parameter_squared > 0.0 {
@@ -157,11 +226,30 @@ pub fn calc_loss(points: &[Point], params: &Params, scratch: &mut Vec<[f64; 2]>)
 
     #[cfg(feature = "trace-hot")]
     let _err_t = Instant::now();
-    let mut error = 0.0;
-    for (point, pred) in points.iter().zip(scratch.iter()) {
-        let dx = point.x - sm * pred[0];
-        let dy = point.y - sm * pred[1];
-        error += (dx * dx + dy * dy) * point.weight;
+    let sm_v = f64x2::splat(sm);
+    let mut err_v = f64x2::ZERO;
+    for i in (0..even).step_by(2) {
+        let p0 = &points[i];
+        let p1 = &points[i + 1];
+        let pr0 = scratch[i];
+        let pr1 = scratch[i + 1];
+        let px = f64x2::from([pr0[0], pr1[0]]);
+        let py = f64x2::from([pr0[1], pr1[1]]);
+        let x = f64x2::from([p0.x, p1.x]);
+        let y = f64x2::from([p0.y, p1.y]);
+        let w = f64x2::from([p0.weight, p1.weight]);
+        let dx = x - sm_v * px;
+        let dy = y - sm_v * py;
+        err_v = (dx * dx + dy * dy).mul_add(w, err_v);
+    }
+    let err_arr = err_v.to_array();
+    let mut error = err_arr[0] + err_arr[1];
+    for i in even..n {
+        let p = &points[i];
+        let pr = scratch[i];
+        let dx = p.x - sm * pr[0];
+        let dy = p.y - sm * pr[1];
+        error += (dx * dx + dy * dy) * p.weight;
     }
     trace_hot!("error sum took {:?}", _err_t.elapsed());
 

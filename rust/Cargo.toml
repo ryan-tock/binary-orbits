@@ -25,6 +25,7 @@ trace-hot = []
 [dependencies]
 pyo3 = { version = "0.22", features = ["abi3-py39"], optional = true }
 fastrand = "2.3"
+wide = "0.7"
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
