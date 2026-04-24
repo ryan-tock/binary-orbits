@@ -7,6 +7,11 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 from scipy.optimize import differential_evolution
 
+try:
+    import binary_orbits_rs as _rs  # Rust extension; optional
+except ImportError:
+    _rs = None
+
 DESMOS_SDK_URL = "https://www.desmos.com/api/v1.11/calculator.js"
 
 
@@ -75,6 +80,14 @@ def calc_loss(parameters, data):
 
 def fit_orbit(data, period_bound):
     bounds = [(0, 0), (0, 0.95), (0, math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (period_bound[0], period_bound[1])]
+    if _rs is not None:
+        # Rust path: build a Dataset once so the DE loop doesn't re-convert
+        # the point dicts on every objective call.
+        ds = _rs.Dataset(data)
+        result = differential_evolution(lambda x: _rs.calc_loss(x.tolist(), ds), bounds)
+        parameters = result.x.tolist()
+        parameters[0] = _rs.optimal_sm(parameters, ds)
+        return parameters
     result = differential_evolution(calc_loss, bounds, args=(data,))
     parameters = result.x.tolist()
     calc_loss(parameters, data)  # fills in the semi-major axis via least-squares

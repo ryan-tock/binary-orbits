@@ -74,6 +74,7 @@ impl Params {
 /// Mirror of `calc_positions` in server.py. Fills `out` with (x, y) pairs
 /// per point. The semi-major axis is *not* applied here; callers scale by
 /// `sm` afterwards.
+#[inline]
 pub fn calc_positions(points: &[Point], params: &Params, out: &mut Vec<[f64; 2]>) {
     #[cfg(feature = "trace-iter")]
     let _iter_t = Instant::now();
@@ -126,6 +127,7 @@ pub fn calc_positions(points: &[Point], params: &Params, out: &mut Vec<[f64; 2]>
 /// optimal semi-major axis so the caller can splice it back into the
 /// parameter vector after DE finishes. `params.sm` is ignored on input
 /// (matches the Python original, which overwrites it internally).
+#[inline]
 pub fn calc_loss(points: &[Point], params: &Params, scratch: &mut Vec<[f64; 2]>) -> (f64, f64) {
     #[cfg(feature = "trace-iter")]
     let _iter_t = Instant::now();

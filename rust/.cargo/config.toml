@@ -1,0 +1,6 @@
+[build]
+# Tune code generation to the host CPU. On the pi this builds for Cortex-A76
+# (+ NEON/SVE where applicable); on dev laptops it picks up whatever the local
+# microarch allows. Safe for both because we build the extension on the
+# machine it runs on (pi for prod/staging, laptop for dev/benches).
+rustflags = ["-C", "target-cpu=native"]
