@@ -1,5 +1,5 @@
 [Unit]
-Description=Pull latest binary-orbits (%i)
+Description=Pull + build + restart binary-orbits (%i)
 After=network-online.target
 Wants=network-online.target
 
@@ -7,5 +7,12 @@ Wants=network-online.target
 Type=oneshot
 User=ryan
 WorkingDirectory=/home/ryan/binary-orbits-%i
+# 1. Sync the checkout with origin.
 ExecStart=/usr/bin/git fetch --quiet origin
 ExecStart=/usr/bin/git merge --ff-only --quiet origin/%i
+# 2. Make sure the venv + Rust extension are up to date. The setup script
+#    is idempotent — it creates the venv on first run and rebuilds the
+#    extension only when maturin sees a change.
+ExecStart=/home/ryan/binary-orbits-%i/deploy/setup-pi-env.sh
+# 3. Restart the app so it picks up any new .so / server.py changes.
+ExecStart=/usr/bin/sudo /bin/systemctl restart binary-orbit-%i.service

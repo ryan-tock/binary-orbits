@@ -9,7 +9,7 @@ User=ryan
 WorkingDirectory=/home/ryan/binary-orbits-staging
 EnvironmentFile=/etc/default/binary-orbit
 # Bind to the pi's Tailscale IP so the port is only reachable over the tailnet.
-ExecStart=/usr/bin/python3 /home/ryan/binary-orbits-staging/server.py --host 100.87.187.98 --port 8082 --static-dir /home/ryan/binary-orbits-staging
+ExecStart=/home/ryan/binary-orbits-staging/.venv/bin/python /home/ryan/binary-orbits-staging/server.py --host 100.87.187.98 --port 8082 --static-dir /home/ryan/binary-orbits-staging
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
