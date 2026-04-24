@@ -6,9 +6,9 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=ryan
-WorkingDirectory=/home/ryan/binary-orbits-prod
+WorkingDirectory=/home/ryan/binary-orbits-main
 EnvironmentFile=/etc/default/binary-orbit
-ExecStart=/usr/bin/python3 /home/ryan/binary-orbits-prod/server.py --host 127.0.0.1 --port 8081 --static-dir /home/ryan/binary-orbits-prod
+ExecStart=/usr/bin/python3 /home/ryan/binary-orbits-main/server.py --host 127.0.0.1 --port 8081 --static-dir /home/ryan/binary-orbits-main
 Restart=on-failure
 RestartSec=2
 StandardOutput=journal
