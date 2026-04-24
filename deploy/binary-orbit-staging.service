@@ -1,0 +1,18 @@
+[Unit]
+Description=Binary Orbit staging (tailnet-only)
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+
+[Service]
+Type=simple
+User=ryan
+WorkingDirectory=/home/ryan/binary-orbits-staging
+# Bind to the pi's Tailscale IP so the port is only reachable over the tailnet.
+ExecStart=/usr/bin/python3 /home/ryan/binary-orbits-staging/server.py --host 100.87.187.98 --port 8082 --static-dir /home/ryan/binary-orbits-staging
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=Binary Orbit prod (orbit.r71.org via cloudflared tunnel)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ryan
+WorkingDirectory=/home/ryan/binary-orbits-prod
+ExecStart=/usr/bin/python3 /home/ryan/binary-orbits-prod/server.py --host 127.0.0.1 --port 8081 --static-dir /home/ryan/binary-orbits-prod
+Restart=on-failure
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

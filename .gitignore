@@ -1,0 +1,10 @@
+config.js
+.venv/
+__pycache__/
+*.pyc
+lambda.zip
+scipy-layer.zip
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
