@@ -5,17 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Binary Orbits</title>
-    <script type="module">
-        try {
-            const config = await import("./config.js");
-            const desmosScript = document.createElement('script');
-            desmosScript.src = `https://www.desmos.com/api/v1.11/calculator.js?apiKey=${config.DESMOS_API_KEY}`;
-            document.head.appendChild(desmosScript);
-        } catch (error) {
-            console.log(error);
-            alert("No config.js found! See README for details");
-        }
-    </script>
+    <script src="/desmos-calculator.js"></script>
     <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>

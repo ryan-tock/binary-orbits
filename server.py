@@ -2,9 +2,18 @@ import argparse
 import json
 import math
 import os
+import urllib.request
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 from scipy.optimize import differential_evolution
+
+DESMOS_SDK_URL = "https://www.desmos.com/api/v1.11/calculator.js"
+
+
+def fetch_desmos_sdk(api_key):
+    url = f"{DESMOS_SDK_URL}?apiKey={api_key}"
+    with urllib.request.urlopen(url, timeout=30) as response:
+        return response.read()
 
 NEWTON_ITERATIONS = 6
 
@@ -72,7 +81,7 @@ def fit_orbit(data, period_bound):
     return parameters
 
 
-def make_handler(static_dir):
+def make_handler(static_dir, desmos_sdk):
     class OrbitHandler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=static_dir, **kwargs)
@@ -90,6 +99,22 @@ def make_handler(static_dir):
         def do_OPTIONS(self):
             self.send_response(204)
             self.end_headers()
+
+        def do_GET(self):
+            if self.path == "/desmos-calculator.js":
+                if desmos_sdk is None:
+                    self.send_response(503)
+                    self.end_headers()
+                    self.wfile.write(b"Desmos SDK not configured on server")
+                    return
+                self.send_response(200)
+                self.send_header("Content-Type", "application/javascript")
+                self.send_header("Content-Length", str(len(desmos_sdk)))
+                self.send_header("Cache-Control", "public, max-age=86400")
+                self.end_headers()
+                self.wfile.write(desmos_sdk)
+                return
+            super().do_GET()
 
         def do_POST(self):
             if self.path != "/process":
@@ -128,7 +153,16 @@ def main():
     parser.add_argument("--static-dir", default=os.path.dirname(os.path.abspath(__file__)))
     args = parser.parse_args()
 
-    handler = make_handler(args.static_dir)
+    api_key = os.environ.get("DESMOS_API_KEY")
+    desmos_sdk = None
+    if api_key:
+        print("fetching Desmos SDK...", flush=True)
+        desmos_sdk = fetch_desmos_sdk(api_key)
+        print(f"cached {len(desmos_sdk)} bytes of Desmos SDK", flush=True)
+    else:
+        print("warning: DESMOS_API_KEY not set; /desmos-calculator.js will 503", flush=True)
+
+    handler = make_handler(args.static_dir, desmos_sdk)
     server = ThreadingHTTPServer((args.host, args.port), handler)
     print(f"serving {args.static_dir} at http://{args.host}:{args.port}/", flush=True)
     try:
