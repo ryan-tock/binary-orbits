@@ -1,0 +1,33 @@
+[package]
+name = "binary_orbits_rs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "binary_orbits_rs"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+# Emit a single summary line per `calc_loss` call (call count + elapsed).
+trace-iter = []
+# Emit per-point timing inside calc_positions. Very noisy; use sparingly.
+trace-point = []
+# Emit timing breakdowns for the hot inner math (trig, Newton, LS).
+trace-hot = []
+
+[dependencies]
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py39"] }
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+approx = "0.5"
+
+[[bench]]
+name = "calc_loss"
+harness = false
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+opt-level = 3

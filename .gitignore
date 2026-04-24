@@ -2,6 +2,8 @@ config.js
 .venv/
 .claude/
 __pycache__/
+rust/target/
+*.so
 *.pyc
 lambda.zip
 scipy-layer.zip

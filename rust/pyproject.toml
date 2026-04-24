@@ -1,0 +1,13 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "binary-orbits-rs"
+version = "0.1.0"
+requires-python = ">=3.9"
+description = "Rust port of the binary-orbit fitting inner loop"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "binary_orbits_rs"
