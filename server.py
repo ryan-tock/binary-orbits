@@ -94,6 +94,8 @@ def make_handler(static_dir, desmos_sdk):
 
         def end_headers(self):
             self._cors()
+            if self.path == "/config.js":
+                super().send_header("Cache-Control", "no-store")
             super().end_headers()
 
         def do_OPTIONS(self):
