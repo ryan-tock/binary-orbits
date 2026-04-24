@@ -1,9 +1,0 @@
-[Unit]
-Description=Watch binary-orbits (%i) ref for changes
-
-[Path]
-PathChanged=/home/ryan/binary-orbits-%i/.git/refs/heads/%i
-Unit=binary-orbit-restart@%i.service
-
-[Install]
-WantedBy=multi-user.target

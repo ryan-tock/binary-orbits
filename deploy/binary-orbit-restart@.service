@@ -1,6 +1,0 @@
-[Unit]
-Description=Restart binary-orbit-%i when its ref changes
-
-[Service]
-Type=oneshot
-ExecStart=/bin/systemctl restart binary-orbit-%i.service
