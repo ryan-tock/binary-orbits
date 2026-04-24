@@ -43,6 +43,7 @@ def fit_python(data, period_bound):
 
 
 def fit_rust(data, period_bound):
+    """scipy DE + Rust loss."""
     assert rs is not None
     bounds = [
         (0, 0), (0, 0.95), (0, math.pi),
@@ -61,6 +62,13 @@ def fit_rust(data, period_bound):
     params = res.x.tolist()
     params[0] = rs.optimal_sm(params, ds)
     return params
+
+
+def fit_pure_rust(data, period_bound):
+    """Rust DE + Rust loss — no Python in the hot loop at all."""
+    assert rs is not None
+    ds = rs.Dataset(data)
+    return rs.fit_orbit(ds, period_bound, seed=42)
 
 
 def timed(fn, reps):
@@ -87,7 +95,7 @@ def main():
     ap.add_argument("--period-low", type=float, default=2.0)
     ap.add_argument("--period-high", type=float, default=40.0)
     ap.add_argument("--reps", type=int, default=3)
-    ap.add_argument("--which", choices=["python", "rust", "both"], default="both")
+    ap.add_argument("--which", choices=["python", "rust", "pure-rust", "all"], default="all")
     args = ap.parse_args()
 
     data, orbit_key = load_dataset(Path(args.data), args.orbit)
@@ -97,35 +105,39 @@ def main():
 
     results = {}
 
-    if args.which in ("python", "both"):
-        print("running Python fit_orbit...")
+    if args.which in ("python", "all"):
+        print("[1/3] scipy DE + Python loss")
         times, params = timed(lambda: fit_python(copy.deepcopy(data), (args.period_low, args.period_high)), args.reps)
         results["python"] = (times, params)
         print(f"  times (s): {['%.3f' % t for t in times]}  median={statistics.median(times):.3f}s")
         print(f"  params: {[round(p, 4) for p in params]}")
         print()
 
-    if args.which in ("rust", "both") and rs is not None:
-        print("running Rust fit_orbit...")
+    if args.which in ("rust", "all") and rs is not None:
+        print("[2/3] scipy DE + Rust loss (cached Dataset)")
         times, params = timed(lambda: fit_rust(copy.deepcopy(data), (args.period_low, args.period_high)), args.reps)
         results["rust"] = (times, params)
         print(f"  times (s): {['%.3f' % t for t in times]}  median={statistics.median(times):.3f}s")
         print(f"  params: {[round(p, 4) for p in params]}")
         print()
 
-    if "python" in results and "rust" in results:
-        py_med = statistics.median(results["python"][0])
-        rs_med = statistics.median(results["rust"][0])
-        print(f"speedup: {py_med / rs_med:.2f}x  (Python={py_med*1000:.0f}ms, Rust={rs_med*1000:.0f}ms)")
+    if args.which in ("pure-rust", "all") and rs is not None:
+        print("[3/3] Rust DE + Rust loss (no Python in the hot loop)")
+        times, params = timed(lambda: fit_pure_rust(copy.deepcopy(data), (args.period_low, args.period_high)), args.reps)
+        results["pure-rust"] = (times, params)
+        print(f"  times (s): {['%.3f' % t for t in times]}  median={statistics.median(times):.3f}s")
+        print(f"  params: {[round(p, 4) for p in params]}")
+        print()
 
-        # Sanity: fits should converge to ~same parameters (DE is stochastic
-        # but we seed both). Check loss is within a reasonable range, not
-        # necessarily identical parameter vectors.
-        py_params = results["python"][1]
-        rs_params = results["rust"][1]
-        py_loss = py_server.calc_loss(py_params[:], data)
-        rs_loss = py_server.calc_loss(rs_params[:], data)
-        print(f"final loss: python={py_loss:.6g}  rust={rs_loss:.6g}")
+    if "python" in results:
+        py_med = statistics.median(results["python"][0])
+        py_loss = py_server.calc_loss(results["python"][1][:], data)
+        print(f"python   : {py_med*1000:7.0f} ms  loss={py_loss:.6g}")
+        for name in ("rust", "pure-rust"):
+            if name in results:
+                med = statistics.median(results[name][0])
+                loss = py_server.calc_loss(results[name][1][:], data)
+                print(f"{name:<9}: {med*1000:7.0f} ms  loss={loss:.6g}  ({py_med/med:.1f}× faster than python)")
 
 
 if __name__ == "__main__":

@@ -14,6 +14,8 @@ use pyo3::types::{PyDict, PyList};
 #[cfg(any(feature = "trace-iter", feature = "trace-point", feature = "trace-hot"))]
 use std::time::Instant;
 
+pub mod de;
+
 pub const NEWTON_ITERATIONS: usize = 6;
 
 // Tracing macros: zero overhead when the relevant feature is off.
@@ -288,12 +290,63 @@ fn calc_positions_py(
     Ok(out)
 }
 
+/// Python: `fit_orbit(dataset, period_bound, *, seed=None) -> list[float]`
+///
+/// End-to-end fit entirely in Rust: runs best1bin differential evolution
+/// over the seven orbital parameters (sm is pinned to 0 within DE; the LS
+/// optimum is spliced in after). Skips scipy entirely, so no Python calls
+/// inside the hot loop at all.
+#[cfg(feature = "python")]
+#[pyfunction]
+#[pyo3(name = "fit_orbit", signature = (dataset, period_bound, seed=None, max_iter=1000))]
+fn fit_orbit_py(
+    dataset: PyRef<'_, Dataset>,
+    period_bound: (f64, f64),
+    seed: Option<u64>,
+    max_iter: usize,
+) -> PyResult<Vec<f64>> {
+    let bounds: [(f64, f64); 7] = [
+        (0.0, 0.0),
+        (0.0, 0.95),
+        (0.0, std::f64::consts::PI),
+        (0.0, 2.0 * std::f64::consts::PI),
+        (0.0, 2.0 * std::f64::consts::PI),
+        (0.0, 2.0 * std::f64::consts::PI),
+        period_bound,
+    ];
+
+    let mut cfg = de::DeConfig::default();
+    cfg.max_iter = max_iter;
+    if let Some(s) = seed {
+        cfg.seed = s;
+    }
+
+    let points = &dataset.points;
+    let mut scratch = dataset.scratch.borrow_mut();
+    let (best, _best_energy, _iters) = de::differential_evolution(
+        &bounds,
+        |x| {
+            let params = Params::from_slice(x);
+            calc_loss(points, &params, &mut scratch).0
+        },
+        &cfg,
+    );
+
+    // Splice in the LS-optimal SM, matching the Python fit_orbit convention.
+    let best_params = Params::from_slice(&best);
+    let (_, sm) = calc_loss(points, &best_params, &mut scratch);
+    let mut out = best;
+    out[0] = sm;
+    Ok(out)
+}
+
 #[cfg(feature = "python")]
 #[pymodule]
 fn binary_orbits_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(calc_loss_py, m)?)?;
     m.add_function(wrap_pyfunction!(optimal_sm_py, m)?)?;
     m.add_function(wrap_pyfunction!(calc_positions_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fit_orbit_py, m)?)?;
     m.add_class::<Dataset>()?;
     m.add("NEWTON_ITERATIONS", NEWTON_ITERATIONS)?;
     Ok(())
