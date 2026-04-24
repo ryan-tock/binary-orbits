@@ -1,0 +1,11 @@
+[Unit]
+Description=Pull latest binary-orbits (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ryan
+WorkingDirectory=/home/ryan/binary-orbits-%i
+ExecStart=/usr/bin/git fetch --quiet origin
+ExecStart=/usr/bin/git merge --ff-only --quiet origin/%i

@@ -1,6 +1,6 @@
 # Binary Orbit 3D Visualizer 🌌
 
-**Check it out live: [https://ryan-tock.github.io/binary-orbits/](https://ryan-tock.github.io/binary-orbits/)**
+**Check it out live: [https://orbit.r71.org/](https://orbit.r71.org/)**
 
 Welcome to the Binary Orbit 3D Visualizer! This graph is for plotting existing (or new) binary star data in a way that can be easily visualized.
 
