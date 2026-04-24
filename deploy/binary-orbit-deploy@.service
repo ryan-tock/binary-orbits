@@ -7,6 +7,10 @@ Wants=network-online.target
 Type=oneshot
 User=ryan
 WorkingDirectory=/home/ryan/binary-orbits-%i
+# cargo/rustc from rustup live under ~/.cargo/bin and aren't on the default
+# service PATH. Include them so `maturin develop` (invoked by setup-pi-env.sh)
+# can find the toolchain.
+Environment=PATH=/home/ryan/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # 1. Sync the checkout with origin.
 ExecStart=/usr/bin/git fetch --quiet origin
 ExecStart=/usr/bin/git merge --ff-only --quiet origin/%i
