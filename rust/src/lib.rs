@@ -15,6 +15,7 @@ use pyo3::types::{PyDict, PyList};
 use std::time::Instant;
 
 pub mod de;
+pub mod free_params;
 pub mod refine;
 pub mod sgd;
 
@@ -277,6 +278,24 @@ fn points_from_pylist(data: &Bound<'_, PyList>) -> PyResult<Vec<Point>> {
     Ok(out)
 }
 
+/// Run `f` against either a cached `Dataset` (fast path) or a plain
+/// `list[dict]` from Python (slow path). Factoring this out lets the
+/// three dict-or-dataset PyO3 wrappers share one branch.
+#[cfg(feature = "python")]
+fn with_points<R>(
+    data: Bound<'_, PyAny>,
+    f: impl FnOnce(&[Point], &mut Vec<[f64; 2]>) -> R,
+) -> PyResult<R> {
+    if let Ok(ds) = data.extract::<PyRef<'_, Dataset>>() {
+        let mut scratch = ds.scratch.borrow_mut();
+        return Ok(f(&ds.points, &mut scratch));
+    }
+    let list = data.downcast::<PyList>()?;
+    let points = points_from_pylist(list)?;
+    let mut scratch = Vec::with_capacity(points.len());
+    Ok(f(&points, &mut scratch))
+}
+
 /// Precomputed dataset owned on the Rust side. Build one per input
 /// dataset, then pass it to `calc_loss` / `optimal_sm` inside the DE loop
 /// to skip the per-call dict→Vec conversion (which otherwise dominates
@@ -318,18 +337,7 @@ impl Dataset {
 #[pyo3(name = "calc_loss")]
 fn calc_loss_py(parameters: Vec<f64>, data: Bound<'_, PyAny>) -> PyResult<f64> {
     let params = Params::from_slice(&parameters);
-
-    if let Ok(ds) = data.extract::<PyRef<'_, Dataset>>() {
-        let mut scratch = ds.scratch.borrow_mut();
-        let (loss, _) = calc_loss(&ds.points, &params, &mut scratch);
-        return Ok(loss);
-    }
-
-    let list = data.downcast::<PyList>()?;
-    let points = points_from_pylist(list)?;
-    let mut scratch = Vec::with_capacity(points.len());
-    let (loss, _) = calc_loss(&points, &params, &mut scratch);
-    Ok(loss)
+    with_points(data, |points, scratch| calc_loss(points, &params, scratch).0)
 }
 
 /// Python: `optimal_sm(parameters, data) -> float` — returns the LS-optimal
@@ -339,24 +347,11 @@ fn calc_loss_py(parameters: Vec<f64>, data: Bound<'_, PyAny>) -> PyResult<f64> {
 #[pyo3(name = "optimal_sm")]
 fn optimal_sm_py(parameters: Vec<f64>, data: Bound<'_, PyAny>) -> PyResult<f64> {
     let params = Params::from_slice(&parameters);
-
-    if let Ok(ds) = data.extract::<PyRef<'_, Dataset>>() {
-        let mut scratch = ds.scratch.borrow_mut();
-        let (_, sm) = calc_loss(&ds.points, &params, &mut scratch);
-        return Ok(sm);
-    }
-
-    let list = data.downcast::<PyList>()?;
-    let points = points_from_pylist(list)?;
-    let mut scratch = Vec::with_capacity(points.len());
-    let (_, sm) = calc_loss(&points, &params, &mut scratch);
-    Ok(sm)
+    with_points(data, |points, scratch| calc_loss(points, &params, scratch).1)
 }
 
-/// Python: `calc_positions(parameters, data) -> list[list[float]]`
-///
-/// Returned pairs are raw (sm=parameters[0] is applied), matching the
-/// Python function's output shape.
+/// Python: `calc_positions(parameters, data) -> list[list[float]]`.
+/// Returned pairs are raw (sm=parameters[0] is applied).
 #[cfg(feature = "python")]
 #[pyfunction]
 #[pyo3(name = "calc_positions")]
@@ -365,19 +360,11 @@ fn calc_positions_py(
     data: Bound<'_, PyAny>,
 ) -> PyResult<Vec<[f64; 2]>> {
     let params = Params::from_slice(&parameters);
-    let mut out = Vec::new();
-
-    if let Ok(ds) = data.extract::<PyRef<'_, Dataset>>() {
-        out.reserve(ds.points.len());
-        calc_positions(&ds.points, &params, &mut out);
-        return Ok(out);
-    }
-
-    let list = data.downcast::<PyList>()?;
-    let points = points_from_pylist(list)?;
-    out.reserve(points.len());
-    calc_positions(&points, &params, &mut out);
-    Ok(out)
+    with_points(data, |points, _| {
+        let mut out = Vec::with_capacity(points.len());
+        calc_positions(points, &params, &mut out);
+        out
+    })
 }
 
 #[cfg(feature = "python")]

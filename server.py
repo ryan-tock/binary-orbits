@@ -78,18 +78,73 @@ def calc_loss(parameters, data):
     return error
 
 
-def fit_orbit(data, period_bound):
-    bounds = [(0, 0), (0, 0.95), (0, math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (0, 2 * math.pi), (period_bound[0], period_bound[1])]
+FIT_METHODS = ("de", "gd")
+
+
+def evaluate_fit(data, parameters):
+    """Score a candidate parameter vector against observations.
+
+    Returns (loss, r_squared):
+      loss      — weighted sum of squared residuals (the same quantity DE
+                  minimizes)
+      r_squared — 1 − SS_res / SS_tot where SS_tot is computed about the
+                  weighted mean of the observed positions. Closer to 1 is
+                  a better fit; can go negative for pathological fits.
+    """
     if _rs is not None:
-        # scipy's DE drives the search (proven robust across the period
-        # harmonics in orbital fits); Rust supplies the vectorized loss +
-        # the cached Dataset so the hot loop stays out of Python. This
-        # path matches scipy+Python loss-quality-wise and runs ~22× faster.
         ds = _rs.Dataset(data)
-        result = differential_evolution(lambda x: _rs.calc_loss(x.tolist(), ds), bounds)
-        parameters = result.x.tolist()
-        parameters[0] = _rs.optimal_sm(parameters, ds)
-        return parameters
+        loss = _rs.calc_loss(list(parameters), ds)
+    else:
+        loss = calc_loss(list(parameters), data)
+
+    wsum = 0.0
+    wxsum = 0.0
+    wysum = 0.0
+    for p in data:
+        wsum += p["weight"]
+        wxsum += p["weight"] * p["x"]
+        wysum += p["weight"] * p["y"]
+    if wsum <= 0.0:
+        return loss, float("nan")
+    mx = wxsum / wsum
+    my = wysum / wsum
+
+    ss_tot = 0.0
+    for p in data:
+        ss_tot += p["weight"] * ((p["x"] - mx) ** 2 + (p["y"] - my) ** 2)
+
+    r_squared = 1.0 - loss / ss_tot if ss_tot > 0.0 else float("nan")
+    return loss, r_squared
+
+
+def fit_orbit(data, period_bound, method="de"):
+    """Fit an orbit. `method` is one of:
+
+    * "de" — Rust differential evolution + BFGS refine (default). Fast,
+      hits the global minimum on most orbits; occasional misses on
+      pathological harmonic-rich datasets.
+    * "gd" — Rust multistart noisy gradient descent + BFGS refine. A
+      little slower, slightly more robust across random seeds.
+
+    Falls back to pure-Python scipy if the Rust extension isn't built.
+    """
+    if method not in FIT_METHODS:
+        raise ValueError(f"unknown fit method {method!r}; pick one of {FIT_METHODS}")
+
+    if _rs is not None:
+        ds = _rs.Dataset(data)
+        period_tuple = (float(period_bound[0]), float(period_bound[1]))
+        if method == "de":
+            return _rs.fit_orbit(ds, period_tuple, refine=True)
+        if method == "gd":
+            return _rs.fit_orbit_sgd(ds, period_tuple, refine=True)
+
+    # Rust ext missing — fall back to scipy+Python for safety.
+    bounds = [
+        (0, 0), (0, 0.95), (0, math.pi),
+        (0, 2 * math.pi), (0, 2 * math.pi), (0, 2 * math.pi),
+        (period_bound[0], period_bound[1]),
+    ]
     result = differential_evolution(calc_loss, bounds, args=(data,))
     parameters = result.x.tolist()
     calc_loss(parameters, data)  # fills in the semi-major axis via least-squares
@@ -134,7 +189,7 @@ def make_handler(static_dir, desmos_sdk):
             super().do_GET()
 
         def do_POST(self):
-            if self.path != "/process":
+            if self.path not in ("/process", "/evaluate"):
                 self.send_response(404)
                 self.end_headers()
                 return
@@ -144,9 +199,14 @@ def make_handler(static_dir, desmos_sdk):
 
             try:
                 body = json.loads(raw_body)
-                parameters = fit_orbit(body["data"], body["periodBound"])
+                if self.path == "/process":
+                    method = body.get("method", "de")
+                    parameters = fit_orbit(body["data"], body["periodBound"], method=method)
+                    payload = json.dumps(parameters).encode("utf-8")
+                else:  # /evaluate
+                    loss, r_squared = evaluate_fit(body["data"], body["parameters"])
+                    payload = json.dumps({"loss": loss, "r_squared": r_squared}).encode("utf-8")
                 status = 200
-                payload = json.dumps(parameters).encode("utf-8")
             except Exception as exc:
                 status = 500
                 payload = json.dumps({"error": str(exc)}).encode("utf-8")

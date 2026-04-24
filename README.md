@@ -27,13 +27,20 @@ Request body (JSON):
 
 Response: a 7-element JSON array, in order: semi-major axis, eccentricity, inclination (rad), longitude of ascending node (rad), argument of periapsis (rad), mean anomaly at epoch (rad), period (years).
 
+Optional `"method"` field picks the fitter:
+
+* `"de"` (default) — differential evolution + BFGS polish. Fastest.
+* `"gd"` — multistart noisy gradient descent + BFGS polish. A little slower, slightly more robust on datasets with many competing period harmonics.
+
 ```sh
 curl -s -X POST https://orbit.r71.org/process \
   -H 'content-type: application/json' \
-  -d '{"data":[{"t":2000,"x":1,"y":0,"weight":1},{"t":2001,"x":0.5,"y":0.8,"weight":1},{"t":2002,"x":-0.5,"y":0.8,"weight":1},{"t":2003,"x":-1,"y":0,"weight":1}],"periodBound":[2,10]}'
+  -d '{"data":[{"t":2000,"x":1,"y":0,"weight":1},{"t":2001,"x":0.5,"y":0.8,"weight":1},{"t":2002,"x":-0.5,"y":0.8,"weight":1},{"t":2003,"x":-1,"y":0,"weight":1}],"periodBound":[2,10],"method":"de"}'
 ```
 
-The endpoint is open and free — there's no auth and no rate limit, so please be reasonable if you're scripting it.
+**`POST https://orbit.r71.org/evaluate`** — score an existing fit against observations. Body: `{"data": [...], "parameters": [sm, e, i, node, periapsis, m0, p]}`. Response: `{"loss": ..., "r_squared": ...}` where `r_squared = 1 − SS_res/SS_tot` (closer to 1 is a better fit).
+
+The endpoints are open and free — there's no auth and no rate limit, so please be reasonable if you're scripting them.
 
 ---
 
@@ -58,7 +65,7 @@ The endpoint is open and free — there's no auth and no rate limit, so please b
 ### 1. Getting Data on the Screen
 
 * **Using The Sample Data**:
-    * Ensure the "Use sample data" checkbox is tucked.
+    * Ensure the "Use sample data" checkbox is ticked.
     * Pick an example orbit from the dropdown list.
 
 * **Using Your Own Data**:
@@ -71,7 +78,7 @@ The endpoint is open and free — there's no auth and no rate limit, so please b
 * **Ensure Period Bounds are Set Correctly**
     * The default period bounds are 2-40 years. Many binary systems are well outside of this range, so ensure you have the bounds set to an appropriate timeframe.
     * The units are always years, so make sure units are converted before putting them in.
-* **Hit "Optimzie Orbit!"**
+* **Hit "Optimize Orbit!"**
 
 ### 3. Tweaking Data
 
@@ -90,7 +97,7 @@ The endpoint is open and free — there's no auth and no rate limit, so please b
 * **Download Updated Data**
     * Click the "Download updated data file" button.
 * **Read Parameters**
-    * Read all 7 orbital parametrs at the bottom section of the page.
+    * Read all 7 orbital parameters at the bottom section of the page.
 
 ---
 
