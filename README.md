@@ -6,6 +6,37 @@ Welcome to the Binary Orbit 3D Visualizer! This graph is for plotting existing (
 
 ---
 
+## 🔌 Raw API
+
+If you'd rather skip the web UI and just get orbit fits over HTTP, hit the endpoint directly:
+
+**`POST https://orbit.r71.org/process`**
+
+Request body (JSON):
+```json
+{
+  "data": [
+    {"t": 2000.0, "x":  1.0, "y":  0.0, "weight": 1.0},
+    {"t": 2001.0, "x":  0.5, "y":  0.8, "weight": 1.0},
+    {"t": 2002.0, "x": -0.5, "y":  0.8, "weight": 1.0},
+    {"t": 2003.0, "x": -1.0, "y":  0.0, "weight": 1.0}
+  ],
+  "periodBound": [2.0, 40.0]
+}
+```
+
+Response: a 7-element JSON array, in order: semi-major axis, eccentricity, inclination (rad), longitude of ascending node (rad), argument of periapsis (rad), mean anomaly at epoch (rad), period (years).
+
+```sh
+curl -s -X POST https://orbit.r71.org/process \
+  -H 'content-type: application/json' \
+  -d '{"data":[{"t":2000,"x":1,"y":0,"weight":1},{"t":2001,"x":0.5,"y":0.8,"weight":1},{"t":2002,"x":-0.5,"y":0.8,"weight":1},{"t":2003,"x":-1,"y":0,"weight":1}],"periodBound":[2,10]}'
+```
+
+The endpoint is open and free — there's no auth and no rate limit, so please be reasonable if you're scripting it.
+
+---
+
 ## 🌟 What Can It Do? (Key Features)
 
 * **See Orbits in 3D**: Get a sense of a binary system in three-dimensional space.
