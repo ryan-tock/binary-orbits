@@ -63,10 +63,19 @@ Welcome to the Binary Orbit 3D Visualizer! This graph is for plotting existing (
 
 ---
 
-## Forking this Repository
-If you'd like to use Desmos in your own project, or in a fork of this project, please reach out to partnerships@desmos.com to request your own API key.
-If you clone this repository and host it yourself you will immediately get an error. To fix this, create a file called config.js and provide the API key and the AWS endpoint. An example config.js is provided below with the Desmos demonstration API key (only to be used during development) and my AWS endpoint (which will only work on localhost and my site)
-```js
-export const DESMOS_API_KEY = "dcb31709b452b1cf9dc26972add0fda6";
-export const API_ENDPOINT_URL = "https://ko2hf5sz9g.execute-api.us-west-2.amazonaws.com/process";
-```
+## Running It Yourself
+
+The site and the optimizer are the same Python process — `server.py` serves the static files and exposes `POST /process` for orbit fits. Requires `numpy` and `scipy`.
+
+1. Create `config.js` in the repo root:
+   ```js
+   export const DESMOS_API_KEY = "dcb31709b452b1cf9dc26972add0fda6"; // Desmos demo key (dev only)
+   export const API_ENDPOINT_URL = "/process"; // same-origin; override with an absolute URL if you host the frontend elsewhere
+   ```
+2. Run the server:
+   ```sh
+   python3 server.py --host 127.0.0.1 --port 8081
+   ```
+3. Open http://127.0.0.1:8081/.
+
+If you want to use Desmos in a production fork, request your own API key from partnerships@desmos.com.
