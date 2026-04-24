@@ -9,6 +9,12 @@ crate-type = ["cdylib", "rlib"]
 
 [features]
 default = []
+# Enables the PyO3 bindings (module + #[pyfunction]s). Turn on when
+# building the Python extension; leave off for `cargo test` / `cargo bench`
+# so the bench binary doesn't have to link libpython.
+python = ["dep:pyo3"]
+# Feature name maturin sets for the wheel build (see pyproject.toml).
+extension-module = ["python", "pyo3/extension-module"]
 # Emit a single summary line per `calc_loss` call (call count + elapsed).
 trace-iter = []
 # Emit per-point timing inside calc_positions. Very noisy; use sparingly.
@@ -17,7 +23,7 @@ trace-point = []
 trace-hot = []
 
 [dependencies]
-pyo3 = { version = "0.22", features = ["extension-module", "abi3-py39"] }
+pyo3 = { version = "0.22", features = ["abi3-py39"], optional = true }
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }

@@ -50,12 +50,16 @@ def fit_rust(data, period_bound):
         (period_bound[0], period_bound[1]),
     ]
 
+    # Build the Dataset once so DE doesn't pay the dict→Vec conversion
+    # on every objective call.
+    ds = rs.Dataset(data)
+
     def loss(x):
-        return rs.calc_loss(x.tolist(), data)
+        return rs.calc_loss(x.tolist(), ds)
 
     res = differential_evolution(loss, bounds, args=(), seed=42)
     params = res.x.tolist()
-    params[0] = rs.optimal_sm(params, data)
+    params[0] = rs.optimal_sm(params, ds)
     return params
 
 

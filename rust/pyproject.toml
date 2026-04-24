@@ -9,5 +9,5 @@ requires-python = ">=3.9"
 description = "Rust port of the binary-orbit fitting inner loop"
 
 [tool.maturin]
-features = ["pyo3/extension-module"]
+features = ["extension-module"]
 module-name = "binary_orbits_rs"
