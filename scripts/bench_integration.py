@@ -65,10 +65,24 @@ def fit_rust(data, period_bound):
 
 
 def fit_pure_rust(data, period_bound):
-    """Rust DE + Rust loss — no Python in the hot loop at all."""
+    """Rust DE + BFGS refine + Rust loss."""
     assert rs is not None
     ds = rs.Dataset(data)
-    return rs.fit_orbit(ds, period_bound, seed=42)
+    return rs.fit_orbit(ds, period_bound, seed=42, refine=True)
+
+
+def fit_rust_de_no_refine(data, period_bound):
+    """Rust DE only — no polish, to show the raw DE-vs-DE speed baseline."""
+    assert rs is not None
+    ds = rs.Dataset(data)
+    return rs.fit_orbit(ds, period_bound, seed=42, refine=False)
+
+
+def fit_rust_sgd(data, period_bound):
+    """Multistart noisy-GD + BFGS refine (pure Rust)."""
+    assert rs is not None
+    ds = rs.Dataset(data)
+    return rs.fit_orbit_sgd(ds, period_bound, seed=42, refine=True)
 
 
 def timed(fn, reps):
@@ -95,7 +109,9 @@ def main():
     ap.add_argument("--period-low", type=float, default=2.0)
     ap.add_argument("--period-high", type=float, default=40.0)
     ap.add_argument("--reps", type=int, default=3)
-    ap.add_argument("--which", choices=["python", "rust", "pure-rust", "all"], default="all")
+    ap.add_argument("--which",
+                    choices=["python", "rust", "pure-rust", "de-only", "sgd", "all"],
+                    default="all")
     args = ap.parse_args()
 
     data, orbit_key = load_dataset(Path(args.data), args.orbit)
@@ -105,39 +121,38 @@ def main():
 
     results = {}
 
-    if args.which in ("python", "all"):
-        print("[1/3] scipy DE + Python loss")
-        times, params = timed(lambda: fit_python(copy.deepcopy(data), (args.period_low, args.period_high)), args.reps)
-        results["python"] = (times, params)
+    def run(name, label, fn):
+        print(f"[{name}] {label}")
+        times, params = timed(lambda: fn(copy.deepcopy(data), (args.period_low, args.period_high)), args.reps)
+        results[name] = (times, params)
         print(f"  times (s): {['%.3f' % t for t in times]}  median={statistics.median(times):.3f}s")
         print(f"  params: {[round(p, 4) for p in params]}")
         print()
+
+    if args.which in ("python", "all"):
+        run("python", "scipy DE + Python loss", fit_python)
 
     if args.which in ("rust", "all") and rs is not None:
-        print("[2/3] scipy DE + Rust loss (cached Dataset)")
-        times, params = timed(lambda: fit_rust(copy.deepcopy(data), (args.period_low, args.period_high)), args.reps)
-        results["rust"] = (times, params)
-        print(f"  times (s): {['%.3f' % t for t in times]}  median={statistics.median(times):.3f}s")
-        print(f"  params: {[round(p, 4) for p in params]}")
-        print()
+        run("rust", "scipy DE + Rust loss", fit_rust)
+
+    if args.which in ("de-only", "all") and rs is not None:
+        run("de-only", "Rust DE only (no polish)", fit_rust_de_no_refine)
 
     if args.which in ("pure-rust", "all") and rs is not None:
-        print("[3/3] Rust DE + Rust loss (no Python in the hot loop)")
-        times, params = timed(lambda: fit_pure_rust(copy.deepcopy(data), (args.period_low, args.period_high)), args.reps)
-        results["pure-rust"] = (times, params)
-        print(f"  times (s): {['%.3f' % t for t in times]}  median={statistics.median(times):.3f}s")
-        print(f"  params: {[round(p, 4) for p in params]}")
-        print()
+        run("pure-rust", "Rust DE + BFGS refine (Rust polish)", fit_pure_rust)
+
+    if args.which in ("sgd", "all") and rs is not None:
+        run("sgd", "Rust multistart SGD + BFGS refine", fit_rust_sgd)
 
     if "python" in results:
         py_med = statistics.median(results["python"][0])
         py_loss = py_server.calc_loss(results["python"][1][:], data)
-        print(f"python   : {py_med*1000:7.0f} ms  loss={py_loss:.6g}")
-        for name in ("rust", "pure-rust"):
+        print(f"{'python':<12}: {py_med*1000:7.0f} ms  loss={py_loss:.6g}")
+        for name in ("rust", "de-only", "pure-rust", "sgd"):
             if name in results:
                 med = statistics.median(results[name][0])
                 loss = py_server.calc_loss(results[name][1][:], data)
-                print(f"{name:<9}: {med*1000:7.0f} ms  loss={loss:.6g}  ({py_med/med:.1f}× faster than python)")
+                print(f"{name:<12}: {med*1000:7.0f} ms  loss={loss:.6g}  ({py_med/med:.1f}× faster than python)")
 
 
 if __name__ == "__main__":

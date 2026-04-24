@@ -15,6 +15,8 @@ use pyo3::types::{PyDict, PyList};
 use std::time::Instant;
 
 pub mod de;
+pub mod refine;
+pub mod sgd;
 
 pub const NEWTON_ITERATIONS: usize = 6;
 
@@ -378,22 +380,17 @@ fn calc_positions_py(
     Ok(out)
 }
 
-/// Python: `fit_orbit(dataset, period_bound, *, seed=None) -> list[float]`
-///
-/// End-to-end fit entirely in Rust: runs best1bin differential evolution
-/// over the seven orbital parameters (sm is pinned to 0 within DE; the LS
-/// optimum is spliced in after). Skips scipy entirely, so no Python calls
-/// inside the hot loop at all.
 #[cfg(feature = "python")]
-#[pyfunction]
-#[pyo3(name = "fit_orbit", signature = (dataset, period_bound, seed=None, max_iter=1000))]
-fn fit_orbit_py(
-    dataset: PyRef<'_, Dataset>,
-    period_bound: (f64, f64),
-    seed: Option<u64>,
-    max_iter: usize,
-) -> PyResult<Vec<f64>> {
-    let bounds: [(f64, f64); 7] = [
+fn fresh_seed() -> u64 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_nanos() as u64)
+        .unwrap_or(0xDEAD_BEEF_BADDF00D)
+}
+
+fn orbit_bounds(period_bound: (f64, f64)) -> [(f64, f64); 7] {
+    [
         (0.0, 0.0),
         (0.0, 0.95),
         (0.0, std::f64::consts::PI),
@@ -401,13 +398,32 @@ fn fit_orbit_py(
         (0.0, 2.0 * std::f64::consts::PI),
         (0.0, 2.0 * std::f64::consts::PI),
         period_bound,
-    ];
+    ]
+}
+
+/// Python: `fit_orbit(dataset, period_bound, *, seed=None, max_iter=1000, refine=True) -> list[float]`
+///
+/// End-to-end fit in Rust: DE first, then (by default) a BFGS refine step
+/// to match scipy's L-BFGS-B polish quality. Pass `refine=False` to skip
+/// the polish and measure DE-only performance.
+#[cfg(feature = "python")]
+#[pyfunction]
+#[pyo3(
+    name = "fit_orbit",
+    signature = (dataset, period_bound, seed=None, max_iter=1000, refine=true)
+)]
+fn fit_orbit_py(
+    dataset: PyRef<'_, Dataset>,
+    period_bound: (f64, f64),
+    seed: Option<u64>,
+    max_iter: usize,
+    refine: bool,
+) -> PyResult<Vec<f64>> {
+    let bounds = orbit_bounds(period_bound);
 
     let mut cfg = de::DeConfig::default();
     cfg.max_iter = max_iter;
-    if let Some(s) = seed {
-        cfg.seed = s;
-    }
+    cfg.seed = seed.unwrap_or_else(fresh_seed);
 
     let points = &dataset.points;
     let mut scratch = dataset.scratch.borrow_mut();
@@ -420,12 +436,95 @@ fn fit_orbit_py(
         &cfg,
     );
 
-    // Splice in the LS-optimal SM, matching the Python fit_orbit convention.
-    let best_params = Params::from_slice(&best);
-    let (_, sm) = calc_loss(points, &best_params, &mut scratch);
-    let mut out = best;
-    out[0] = sm;
+    let mut out_arr: [f64; 7] = best.as_slice().try_into().unwrap();
+    if refine {
+        let (polished, _loss) = refine::bfgs_refine(
+            points,
+            &out_arr,
+            &bounds,
+            &refine::RefineConfig::default(),
+            &mut scratch,
+        );
+        out_arr = polished;
+    } else {
+        // Splice in the LS-optimal SM, matching the Python fit_orbit convention.
+        let best_params = Params::from_slice(&out_arr);
+        let (_, sm) = calc_loss(points, &best_params, &mut scratch);
+        out_arr[0] = sm;
+    }
+    let out = out_arr.to_vec();
     Ok(out)
+}
+
+/// Python: `refine(dataset, parameters, period_bound, *, max_iter=200) -> list[float]`
+///
+/// Polish an existing 7-vector fit with BFGS. Callers pass the DE (or
+/// scipy) output and get a (hopefully lower-loss) refined vector back.
+#[cfg(feature = "python")]
+#[pyfunction]
+#[pyo3(
+    name = "refine",
+    signature = (dataset, parameters, period_bound, max_iter=200)
+)]
+fn refine_py(
+    dataset: PyRef<'_, Dataset>,
+    parameters: Vec<f64>,
+    period_bound: (f64, f64),
+    max_iter: usize,
+) -> PyResult<Vec<f64>> {
+    if parameters.len() != 7 {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "parameters must have 7 entries",
+        ));
+    }
+    let x_init: [f64; 7] = parameters.as_slice().try_into().unwrap();
+    let bounds = orbit_bounds(period_bound);
+
+    let mut cfg = refine::RefineConfig::default();
+    cfg.max_iter = max_iter;
+
+    let mut scratch = dataset.scratch.borrow_mut();
+    let (polished, _) = refine::bfgs_refine(&dataset.points, &x_init, &bounds, &cfg, &mut scratch);
+    Ok(polished.to_vec())
+}
+
+/// Python: `fit_orbit_sgd(dataset, period_bound, *, seed=None, refine=True) -> list[float]`
+///
+/// Runs the basin-hopping / noisy-GD global optimizer (see src/sgd.rs).
+/// By default finishes with a BFGS refine for a fair comparison against
+/// DE+refine. Set `refine=False` to see the raw SGD output.
+#[cfg(feature = "python")]
+#[pyfunction]
+#[pyo3(
+    name = "fit_orbit_sgd",
+    signature = (dataset, period_bound, seed=None, refine=true)
+)]
+fn fit_orbit_sgd_py(
+    dataset: PyRef<'_, Dataset>,
+    period_bound: (f64, f64),
+    seed: Option<u64>,
+    refine: bool,
+) -> PyResult<Vec<f64>> {
+    let bounds = orbit_bounds(period_bound);
+
+    let mut cfg = sgd::SgdConfig::default();
+    cfg.seed = seed.unwrap_or_else(fresh_seed);
+
+    let points = &dataset.points;
+    let mut scratch = dataset.scratch.borrow_mut();
+    let (best, _loss, _iter) = sgd::fit(points, &bounds, &cfg, &mut scratch);
+    let mut out = best;
+    if refine {
+        let (polished, _) = refine::bfgs_refine(
+            points,
+            &out,
+            &bounds,
+            &refine::RefineConfig::default(),
+            &mut scratch,
+        );
+        out = polished;
+    }
+    Ok(out.to_vec())
 }
 
 #[cfg(feature = "python")]
@@ -435,6 +534,8 @@ fn binary_orbits_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(optimal_sm_py, m)?)?;
     m.add_function(wrap_pyfunction!(calc_positions_py, m)?)?;
     m.add_function(wrap_pyfunction!(fit_orbit_py, m)?)?;
+    m.add_function(wrap_pyfunction!(refine_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fit_orbit_sgd_py, m)?)?;
     m.add_class::<Dataset>()?;
     m.add("NEWTON_ITERATIONS", NEWTON_ITERATIONS)?;
     Ok(())
