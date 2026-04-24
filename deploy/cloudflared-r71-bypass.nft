@@ -1,9 +1,15 @@
 # nftables rules that mark outbound packets from the cloudflared-r71
 # cgroup with 0x80000. The pi's existing `from all fwmark 0x80000 lookup 200`
 # ip rule then routes those packets out eth0, bypassing ProtonVPN's default
-# route. Loaded by the cloudflared-r71.service drop-in; safe to apply
-# repeatedly (idempotent on add, flush on chain).
+# route.
+#
+# DNS (port 53) is deliberately skipped: cloudflared resolves argotunnel.com
+# via the pi's default resolver, which on this pi is Tailscale MagicDNS at
+# fd7a:115c:a1e0::53 — only reachable over the tailscale interface. Marking
+# those packets would break DNS.
 add table inet orbit_bypass
 add chain inet orbit_bypass output { type route hook output priority mangle; policy accept; }
 flush chain inet orbit_bypass output
+add rule inet orbit_bypass output socket cgroupv2 level 2 "system.slice/cloudflared-r71.service" meta l4proto udp udp dport 53 return
+add rule inet orbit_bypass output socket cgroupv2 level 2 "system.slice/cloudflared-r71.service" meta l4proto tcp tcp dport 53 return
 add rule inet orbit_bypass output socket cgroupv2 level 2 "system.slice/cloudflared-r71.service" meta mark set meta mark or 0x80000 counter
